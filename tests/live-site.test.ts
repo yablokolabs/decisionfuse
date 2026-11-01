@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { execFileSync } from 'node:child_process';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { buildProposal } from '../src/domain/propose';
 import { extractCriteria, adfToText } from '../src/domain/issue-text';
 import { extractDecisionBlocks, hashText, normalizeText } from '../src/domain/text';
@@ -70,6 +71,23 @@ async function readIssue(issueKey: string) {
 }
 
 describe.skipIf(!LIVE)('live site integration', () => {
+  const createdPages: string[] = [];
+
+  beforeAll(() => {
+    // Same seed script judges run, so the suite no longer depends on content
+    // that was created by hand at some earlier point.
+    const out = execFileSync(process.execPath, ['scripts/seed-synthetic.mjs'], { encoding: 'utf8', timeout: 120_000 });
+    expect(JSON.parse(out).project.key).toBe('DFS');
+  }, 180_000);
+
+  // Removes the page this run created, so repeated runs stop leaving orphan
+  // pages beside the scenario. Nothing that existed before the run is touched.
+  afterAll(async () => {
+    for (const id of createdPages) {
+      await api(`/wiki/api/v2/pages/${id}`, { method: 'DELETE' });
+    }
+  }, 60_000);
+
   it('runs register → rescan → propose → stale rejection against real content', async () => {
     const tenantId = SITE.replace(/^https?:\/\//, '');
     const repo = new Repository(new MemoryKv(), tenantId);
@@ -91,6 +109,7 @@ describe.skipIf(!LIVE)('live site integration', () => {
       },
     });
     const pageId: string = created.id;
+    createdPages.push(pageId);
 
     const v1 = await readPage(pageId);
     await repo.putDecision(

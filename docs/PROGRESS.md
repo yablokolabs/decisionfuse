@@ -2,6 +2,15 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-01 ~22:00 UTC / working tree after `e74b210` / milestone M8 (test hygiene, permissions fixture, theme-safe logo)
+Changed:
+- `tests/live-site.test.ts`: `beforeAll` runs `scripts/seed-synthetic.mjs`, `afterAll` deletes the page the run created. The suite no longer depends on hand-made content and no longer accumulates orphan pages.
+- `scripts/fixture-permissions.mjs` (new): verifies owner-side access (edit permission on `DFS-1`, readable `426003` at v1 with the block present) and then exits **3**, naming the second identity it needs. The restriction path is written but has never executed.
+- `assets/decisionfuse-logo-dark.png` + README `<picture>`: the logo is RGBA dark-navy artwork, invisible on GitHub's dark theme. PIL is not installed on this host, so the dark variant is an ffmpeg light-plate composite rather than a recolour.
+Checks actually run: `npx vitest run` → 6 files passed, 1 skipped, **49 tests**; `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` → 1 passed (4.0s) with **post-run leftovers `[]`**; three pre-existing orphan pages `426019`/`393458`/`262291` deleted (204 each) and a follow-up CQL search returned `[]`; `node scripts/fixture-permissions.mjs` → exit 3, `status: blocked`, owner control values recorded.
+Capability status: unchanged where it matters — the Forge runtime, Rovo agent and MCP tools are still uninvoked, and both denied-access paths are still mocked-only.
+Next executable action: unchanged — panel click-through in a signed-in browser, then the admin MCP toggle.
+
 ## Checkpoint — 2026-11-01 ~21:15 UTC / working tree after `37ae687` / milestone M7 (reproducible synthetic scenario)
 Changed:
 - `scripts/seed-synthetic.mjs` (new) and `npm run seed:synthetic`: idempotent seeding of project `DFS`, issues `DFS-1`–`DFS-3` and page `426003` holding block `checkout-guest`. Objects are found by summary and page title, so a re-run writes nothing and cannot bump the page version that a stored baseline depends on.
