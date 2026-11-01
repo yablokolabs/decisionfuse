@@ -19,4 +19,9 @@ coverage/
 
 # Media/render intermediates
 videos/tmp/
+videos/.skill/
+videos/decisionfuse-demo/node_modules/
+videos/decisionfuse-demo/out/
+videos/decisionfuse-demo/stills/
+.scratch/
 *.log

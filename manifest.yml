@@ -1,0 +1,39 @@
+modules:
+  jira:issuePanel:
+    - key: decisionfuse-impact-panel
+      resource: main
+      resolver:
+        function: resolver
+      viewportSize: medium
+      title: DecisionFuse
+      icon: https://developer.atlassian.com/platform/forge/images/issue-panel-icon.svg
+  confluence:contentBylineItem:
+    - key: decisionfuse-register-decision
+      resource: main
+      resolver:
+        function: resolver
+      title: DecisionFuse
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: analysis-consumer
+      handler: index.consumer
+  consumer:
+    - key: decisionfuse-analysis-consumer
+      queue: decisionfuse-analysis
+      function: analysis-consumer
+resources:
+  - key: main
+    path: static/hello-world/build
+permissions:
+  scopes:
+    - read:jira-work
+    - write:jira-work
+    - read:confluence-content.all
+    - storage:app
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4
