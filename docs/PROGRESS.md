@@ -1,6 +1,16 @@
 # Progress
-Status: M1 CORE IMPLEMENTED LOCALLY; NOT DEPLOYED, NOT INSTALLED, NO REAL-SITE PROOF.
+Status: M1 CORE + ROVO/MCP MODULES IMPLEMENTED LOCALLY; NOT DEPLOYED, NOT INSTALLED, NO REAL-SITE PROOF, NO TOOL INVOCATION.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
+
+## Checkpoint — 2026-11-01 ~17:40 UTC / working tree after `4395204` / milestone M4 (modules declared)
+Changed:
+- `manifest.yml`: three `action` modules (`inspect_decision_change`, `list_affected_work`, `get_proposal`) on dedicated functions, one `rovo:agent`, one `rovo:mcp`. Contracts read from the official Rovo Agent (Oct 2 2026) and Rovo MCP (Oct 29 2026) pages.
+- `src/actions/tools.ts`: shared read-only tool layer. Installation-scoped storage, identifier allow-lists, fail-closed source and issue permission checks, no approval or mutation surface.
+- `tests/tools.test.ts`: denied source, withheld issues, invalid inputs, installation isolation, and no-approval assertions.
+Checks actually run: `npx tsc --noEmit` → exit 0; `npx vitest run` → 5 files / 40 tests; `forge lint` → No issues found.
+Capability status: Rovo agent and MCP server **declared and lint-clean, never invoked**; bonus eligibility unclaimed. Teamwork Graph unverified and unused. No deployment, so nothing is judge-testable yet.
+Open issue: no authorized site → cannot deploy, install, enable MCP exposure or record a real invocation.
+Next executable action: deploy to the chosen development site, install for Jira and Confluence separately, then exercise `list_affected_work` from a real client and record redacted evidence here.
 
 ## Checkpoint — 2026-11-01 ~17:25 UTC / commit `fc2f1bc` + working tree / milestone M1 (local)
 Changed:

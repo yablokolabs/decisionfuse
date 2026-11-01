@@ -1,4 +1,5 @@
 import Resolver from '@forge/resolver';
+import { getProposal, inspectDecisionChange, listAffectedWork, INSTALLATION_SCOPE } from './actions/tools';
 import { extractDecisionBlocks, hashText, normalizeText } from './domain/text';
 import type { Finding, Proposal } from './domain/types';
 import { analyzeBlock, decisionForRegistration } from './queue/engine';
@@ -171,6 +172,46 @@ resolver.define('approveAndApply', async (req) => {
 });
 
 export const handler = resolver.getDefinitions();
+
+/**
+ * Rovo agent and MCP action handlers. Identity comes from platform context and
+ * installation-scoped storage, never from the model's payload.
+ */
+function toolDeps() {
+  return {
+    repoFor: (scope: string) => new Repository(forgeKv, scope),
+    canReadSource: async (pageId: string): Promise<boolean> => {
+      try {
+        await fetchPageText(pageId);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    canReadIssue: async (issueKey: string): Promise<boolean> => {
+      try {
+        await fetchIssueSnapshot(issueKey);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  };
+}
+
+export async function inspectDecisionChangeAction(payload: { blockId?: string }) {
+  return inspectDecisionChange(toolDeps(), payload ?? {});
+}
+
+export async function listAffectedWorkAction(payload: { blockId?: string }) {
+  return listAffectedWork(toolDeps(), payload ?? {});
+}
+
+export async function getProposalAction(payload: { proposalId?: string }) {
+  return getProposal(toolDeps(), payload ?? {});
+}
+
+export { INSTALLATION_SCOPE };
 
 /** Async queue consumer: same engine, idempotent by dedupe key. */
 export async function consumer(event: { body?: { tenantId?: string; pageId?: string; blockId?: string } }) {

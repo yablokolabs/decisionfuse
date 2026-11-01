@@ -13,22 +13,23 @@ Category: Apps for Software Teams (Atlassian Codegeist 2026).
 Local, verified on 2026-11-01:
 
 - Forge app registered as `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4` in the `DecisionFuse` Developer Space.
-- `forge lint` reports **No issues found** for the manifest (Jira issue panel, Confluence content byline module, resolver, queue consumer).
-- `npx tsc --noEmit` clean; `npx vitest run` **34 tests passing** across four suites.
+- `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
+- `npx tsc --noEmit` clean; `npx vitest run` **40 tests passing** across five suites.
 - Deterministic domain: block extraction, formatting-insensitive hashing, span diffing, classification, evidence validation, proposal-bound approval, single-use approvals, tenant partitioning, replay-safe findings, reconcile-before-retry.
+- Read-only tool layer shared by the Rovo agent and the MCP server, with input allow-lists and fail-closed permission checks.
 
 Not yet verified — do not assume it works:
 
-- No deployment to a site and no real Jira/Confluence read or write has been executed.
-- No Rovo agent and no Forge MCP tools are implemented.
+- No deployment and no installation. No real Jira or Confluence request has run, so the review loop is unproven end to end.
+- The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure. Bonus eligibility is not claimed.
 - Teamwork Graph is not used. No Marketplace listing exists.
 - The UI bundle builds, but its resolvers have only been exercised against fakes.
 
 ## Architecture
 
-<img src="assets/architecture.png" alt="DecisionFuse review pipeline: a Confluence decision block is registered with a baseline, compared by a deterministic analysis consumer, validated against evidence spans, reviewed in a Jira panel, and written only after a permission-checked human approval." width="900">
+<img src="assets/architecture.png" alt="DecisionFuse review pipeline: a Confluence decision block is registered with a baseline, compared by a deterministic analysis consumer, validated against evidence spans, reviewed in a Jira panel, and written only after a permission-checked human approval. A separate read-only Rovo and MCP surface reads the same records." width="900">
 
-Source: [`assets/architecture.svg`](assets/architecture.svg). The dashed edge is a proposal that has not been written; the amber edge is the only remote write, and it is gated by a fresh permission and hash recheck.
+Source: [`assets/architecture.svg`](assets/architecture.svg). The dashed edges are proposals that have not been written and the read-only surface; the amber edge is the only remote write, gated by a fresh permission and hash recheck.
 
 ## How the review loop works
 
@@ -40,6 +41,26 @@ Source: [`assets/architecture.svg`](assets/architecture.svg). The dashed edge is
 6. **Propose.** The proposal is one criterion with exact replacement text, precondition hashes and an expiry.
 7. **Approve.** A permission-checked, single-use approval bound to the proposal hash and the live source and issue versions.
 8. **Write and reconcile.** A marker-tagged comment carries the amendment, so a timeout reconciles instead of posting twice. Scope removal stays a recommendation on the native workflow.
+
+## Rovo agent and MCP tools
+
+Both surfaces call the same read-only actions, so they cannot diverge from the review flow:
+
+| Tool | Answers |
+| --- | --- |
+| `inspect_decision_change` | What is the registered baseline, and which issues are flagged? |
+| `list_affected_work` | Which issues are linked, and what is the evidence for each? |
+| `get_proposal` | What is the exact proposed text, and its preconditions? |
+
+Safety properties enforced in code and tested:
+
+- Tenant identity is not an input. Forge storage is installation-scoped, so a caller cannot name another site.
+- `blockId` and `proposalId` must match a plain identifier pattern. No URLs, API paths or queries reach the platform.
+- A source the caller cannot read returns a bare denial with no title, count, span or hint.
+- Issues the caller cannot browse are omitted, and the response flags that evidence was withheld.
+- No tool exposes an approval, and none can mutate or transition anything. `get_proposal` returns the review path instead.
+
+The agent prompt keeps the same boundary: it explains and quotes evidence, and always directs the user to approve in the authenticated Jira panel.
 
 ## Run the checks
 
@@ -59,17 +80,18 @@ forge lint
 | `src/domain` | Types, text and hashing, classification, evidence, approval gate |
 | `src/queue` | Idempotent analysis engine |
 | `src/review` | Approved apply path with remote reconciliation |
+| `src/actions` | Read-only tools shared by Rovo and MCP |
 | `src/services` | Jira and Confluence reads and the marker comment |
 | `src/storage` | Tenant-partitioned repository and the Forge KV adapter |
 | `static/hello-world` | Review panel bundle |
-| `tests` | Domain, permission, concurrency and reconciliation tests |
+| `tests` | Domain, permission, concurrency, reconciliation and tool tests |
 | `docs` | Build spec, verification notes, evaluation scenarios, progress |
-| `videos/decisionfuse-demo` | Remotion walkthrough (renders offline; logo in intro and outro) |
+| `videos/decisionfuse-demo` | Remotion walkthrough (logo in intro and outro) |
 
 ## Competition notes
 
-The uploaded brief is preserved in `docs/COMPETITION_BRIEF.txt`. Official listing checked November 1, 2026: deadline December 22, 2026 12:00 PST. Recheck the official rules before submitting. Public posting, Marketplace submission and the final competition entry remain the owner's decisions.
+The uploaded brief is preserved in `docs/COMPETITION_BRIEF.txt`. Official listing checked November 1, 2026: deadline December 22, 2026 12:00 PST. Recheck the official rules before submitting, and read `docs/PLATFORM_VERIFICATION.md` for what is verified versus merely declared. Public posting, Marketplace submission and the final competition entry remain the owner's decisions.
 
 ## License
 
-See `docs/BUILT_WITH.md` for the technologies actually in use and `LICENSE` for the app's own terms; third-party notices live in `THIRD_PARTY_NOTICES.md`.
+MIT for this repository; third-party obligations and Atlassian trademark notes are in `THIRD_PARTY_NOTICES.md`.
