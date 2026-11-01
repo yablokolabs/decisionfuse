@@ -13,7 +13,7 @@ const COPY = {
   line1: 'Decisions [change].',
   line2: '[Work] [should] [catch up.]',
   sub: 'Reviewed drift between an accepted decision and the tickets built on it.',
-  chip: 'Concept walkthrough \u00b7 prototype',
+  chip: 'Installed on a development site',
   panelTitle: 'Decision block \u00b7 checkout',
   bubbles: [
     {side: 'in' as const, text: 'Guest checkout is accepted.', at: 1.0},

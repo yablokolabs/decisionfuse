@@ -63,6 +63,7 @@ export async function analyzeBlock(deps: AnalysisDeps, request: AnalysisRequest)
   }
 
   const links = await repo.linksForBlock(request.blockId);
+  const known = await repo.listFindings(request.blockId);
   const findings: Finding[] = [];
   const changed = changedRegion(registered.text, text);
   const diff = diffText(registered.text, text);
@@ -87,7 +88,7 @@ export async function analyzeBlock(deps: AnalysisDeps, request: AnalysisRequest)
       engineVersion: ENGINE_VERSION,
     });
 
-    const existing = (await repo.listFindings(request.blockId)).find((f) => f.dedupeKey === key);
+    const existing = known.find((f) => f.dedupeKey === key);
     if (existing && existing.lifecycle === 'dismissed') continue;
 
     const sourceSpan: Span = {
@@ -118,12 +119,24 @@ export async function analyzeBlock(deps: AnalysisDeps, request: AnalysisRequest)
       rationale: verdict.rationale,
       engine: 'deterministic',
       dedupeKey: key,
-      lifecycle: 'needs-review',
+      // An unaffected control is recorded for completeness but never queued for review.
+      lifecycle: verdict.classification === 'unaffected' ? 'analyzed' : 'needs-review',
       createdAt: deps.now(),
     };
 
     assertFindingEvidence(finding, text, criterion?.text ?? null);
     await repo.putFinding(finding);
+
+    if (finding.lifecycle === 'analyzed') {
+      // A criterion that used to be flagged is now unaffected: retire the older finding.
+      for (const stale of known) {
+        if (stale.id === finding.id) continue;
+        if (stale.issueKey !== finding.issueKey || stale.criterionId !== finding.criterionId) continue;
+        if (stale.lifecycle !== 'needs-review') continue;
+        await repo.putFinding({ ...stale, lifecycle: 'superseded' });
+      }
+      continue;
+    }
     findings.push(finding);
   }
 

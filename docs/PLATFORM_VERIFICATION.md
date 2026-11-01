@@ -50,9 +50,23 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Engine on live content | `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` | Passed 4.1s: page `426019` seeded, withdrawn at v2, findings on `DFS-1`/`DFS-2`, none on unlinked `DFS-3`, proposal text exact, v3 approval rejected `stale-source` with `writes: 0` |
 | Forge runtime path | resolver calls as the signed-in user | **Unverified.** The live check uses the owner's API token, not `asUser()`, so platform permission delegation and Forge storage are untested |
 | Proposal and approval gate | `src/domain/propose.ts`, `src/review/apply.ts` | Reachable from the panel, exercised on live data over REST; not yet through the runtime |
-| MCP tool enablement | Atlassian Administration | **Blocked**: `rovo:mcp` is preview and each tool must be enabled per installation by a site or org admin. No admin session on this host |
+| MCP tool enablement | Atlassian Administration | **Still disabled.** The account holds site `ADMINISTER`; the toggle is Apps › Sites › site › Connected apps and has no documented API. See `evidence/2026-11-01-mcp-probe.md` |
 | Rovo agent | `rovo:agent` | **Not invoked**, no conversation recorded |
-| MCP tools | `rovo:mcp` | **Not invoked**; exposure disabled until a site admin enables each tool |
+| MCP tools | `rovo:mcp` | **Not invoked**. `https://mcp.atlassian.com/forge/<appId>` returns **404** while the server's own OAuth metadata returns 200, so exposure is off rather than misconfigured |
 | Teamwork Graph | — | Not tested, not used. Jira/Confluence links are not TWG evidence |
+
+## MCP exposure probe, 2026-11-01 (documented contract vs. real endpoint)
+
+Full record: `evidence/2026-11-01-mcp-probe.md`.
+
+| Check | Result |
+| --- | --- |
+| Manifest vs. current reference (Oct 29 2026) | One `rovo:mcp` module listing three `action` keys. `forge lint` → No issues found |
+| `https://mcp.atlassian.com/forge/42074d3d-8872-4475-850b-8a75eb4d10b4` | **404** (also 404 for `/.well-known/oauth-protected-resource` and `/mcp`) |
+| `https://mcp.atlassian.com/.well-known/oauth-authorization-server` | **200**, advertises issuer, authorize, token and registration endpoints |
+| Site `ADMINISTER` permission for the owner account | `havePermission: true` |
+| Documented enablement path | Apps › Sites › your site › Connected apps → select the app → turn on tools. Per installation, UI only |
+
+Reading: the MCP host is live and the app path is simply not advertised, which matches "external exposure is disabled by default". Admin rights are not the blocker; the UI toggle is, and this host has no browser. No invocation, no tool output and no client behaviour has been observed, so **no MCP eligibility is claimed**.
 
 Consequences for claims: deployment and installation are **verified**. The domain, proposal builder and approval gate are **verified against live content over REST**. Invocation through the Forge runtime, the Rovo agent and the MCP tools remain **installed but never invoked**. No bonus eligibility is claimed until a real invocation and an admin enablement are recorded here with redacted output.

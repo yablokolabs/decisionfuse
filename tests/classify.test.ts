@@ -31,6 +31,30 @@ describe('classification', () => {
     expect(result.rationale).toContain('Obligation wording');
   });
 
+  it('reports a criterion in an untouched clause as unaffected', () => {
+    const result = classifyChange({
+      ...base,
+      oldBlockText: 'Guest checkout is enabled for first-time buyers. Guest cart sessions expire after 60 minutes.',
+      newBlockText:
+        'Guest checkout is no longer enabled for first-time buyers. Guest cart sessions expire after 60 minutes.',
+      criterionText: 'Guest cart sessions must expire after 60 minutes.',
+    });
+    expect(result.classification).toBe('unaffected');
+    expect(result.rationale).toContain('guest cart');
+  });
+
+  it('still flags the criterion named in the withdrawn clause', () => {
+    const result = classifyChange({
+      ...base,
+      oldBlockText: 'Guest checkout is enabled for first-time buyers. Guest cart sessions expire after 60 minutes.',
+      newBlockText:
+        'Guest checkout is no longer enabled for first-time buyers. Guest cart sessions expire after 60 minutes.',
+      criterionText: 'Guest checkout must work without an account.',
+    });
+    expect(result.classification).toBe('obsolete-scope');
+    expect(result.rationale).toContain('guest checkout');
+  });
+
   it('ignores formatting-only edits', () => {
     const result = classifyChange({
       ...base,

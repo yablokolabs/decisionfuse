@@ -1,0 +1,32 @@
+[
+  {
+    "id": "hook",
+    "window": 9,
+    "text": "Two lines of prose change in a decision, and weeks of work are already built on the old version."
+  },
+  {
+    "id": "problem",
+    "window": 52,
+    "text": "An accepted decision lives in Confluence. The work built on it lives in Jira, and nothing connects the two. A requirement gets reversed, and the story still asks for the old behaviour. Scope is dropped, and the ticket keeps carrying it, sprint after sprint. The page changed on a Thursday, and the board never heard about it, because there was no link and no owner. That is the drift: the decision moved, the work did not, and the gap stays invisible until someone ships the wrong thing."
+  },
+  {
+    "id": "how",
+    "window": 82,
+    "text": "DecisionFuse closes that gap in four steps. Register: one decision block, with an owner, a status and a baseline page version. Only an accepted block is actionable. Link: issues are linked explicitly, criterion by criterion. Nothing is guessed from similarity. Compare: the engine diffs the stored baseline against the current page, per linked criterion, and ignores formatting-only edits. Every finding carries spans that must resolve against the exact text version. If a quote does not resolve, the finding is rejected instead of shown. Propose: each finding offers one exact change. The matching sentence in the criterion is replaced and the rest of the description is preserved. A scope removal stays a recommendation. Approve: the approval is single use, bound to the proposal, and it rechecks your write permission, the source hash and the issue fingerprint. If the page moved, nothing is written. A model can propose an interpretation. Only a permitted person approves a write."
+  },
+  {
+    "id": "arch",
+    "window": 22,
+    "text": "Underneath, the pipeline is deliberately dull. A registered block, an immutable baseline, an idempotent consumer, an evidence validator, and an approval gate. One edge writes, and only after a human approves. The Rovo agent and the MCP tools read the same records."
+  },
+  {
+    "id": "real",
+    "window": 26,
+    "text": "This is a recorded run on a development site. The block said guest checkout is enabled for first-time buyers. It was edited to say no longer enabled. Two issues were linked. The checkout criterion is flagged as obsolete scope, with the exact evidence span. The cart session criterion is reported as unaffected. The proposed change is one sentence. Then the page moved again, so the write was refused, with nothing written."
+  },
+  {
+    "id": "outro",
+    "window": 12,
+    "text": "Decisions change. Work should catch up. Evidence first, then an owner-approved correction, and never an automatic close."
+  }
+]

@@ -1,6 +1,17 @@
 # Progress
-Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2.2.0). Engine, proposal and approval gate have run against live site content; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
+Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2.3.0). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
+
+## Checkpoint — 2026-11-01 ~20:40 UTC / working tree after `e0c1ce8` plus uncommitted changes / milestone M6 (classifier fix, MCP probe, demo scenes)
+Changed:
+- `src/domain/classify.ts`: new `changedClause()` and `subjectTokens()`. A withdrawal now only flags a criterion whose head nouns sit in the changed clause; a criterion in an untouched clause is reported `unaffected`. This replaces a keyword test that matched against the whole block, which is why `DFS-2` was a false positive.
+- `src/queue/engine.ts`: unaffected findings are persisted with lifecycle `analyzed` (never queued for review) and retire any older `needs-review` finding for the same issue and criterion.
+- Tests: three classifier cases and one engine case for the control path; the gated live suite now asserts `DFS-2` is `unaffected`/`analyzed` and only `DFS-1` is queued.
+- `videos/decisionfuse-demo`: storyboard now 3:23 with an `Architecture` scene (trimmed diagram) and a `Recorded run` scene carrying the real page, finding, quote, proposal and stale refusal; `scripts/trim.mjs` trims the PNG with ffmpeg; `narration.json` + `scripts/voiceover.py` prepared for narration.
+Checks actually run: `npx tsc --noEmit` → 0; `npx vitest run` → 6 files / 49 tests; `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` → 1 passed (4.0s), findings now `['DFS-1']` only, `DFS-2` recorded `unaffected`/`analyzed`, `DFS-3` unlinked, proposal text unchanged, stale refusal `stale-source` with `writes: 0`; `forge lint` → No issues found; `forge deploy -e development` → `✔ Deployed` 2.3.0; video `npx tsc -p .` → 0.
+MCP probe (`evidence/2026-11-01-mcp-probe.md`): `mcp.atlassian.com/forge/<appId>` → **404**, `/.well-known/oauth-protected-resource` → 404, server OAuth metadata → 200. The owner account holds `ADMINISTER`, so rights are not the blocker; external exposure is off and the documented toggle is UI-only.
+Narration: ElevenLabs voice listing succeeded, synthesis returned **402 Payment Required** on the account, so the video is silent and no paid plan was created (`evidence/2026-11-01-narration.md`).
+Next executable action: enable the three MCP tools in Atlassian Administration, connect a supported client and record one redacted invocation; then click the panel path through the Forge runtime.
 
 ## Checkpoint — 2026-11-01 ~19:25 UTC / working tree after `d38ab63` / milestone M5 (proposal + approval reachable, live engine proof)
 Changed:

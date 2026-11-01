@@ -13,7 +13,7 @@ const COPY = {
   line2: '[Work] [should] [catch up.]',
   sub: 'Evidence first. Then an owner-approved correction. Never an automatic close.',
   cta: 'github.com/yablokolabs/decisionfuse',
-  footnote: 'Prototype · not yet installed on a site',
+  footnote: 'Development install · synthetic data · no automatic closure',
 };
 
 export const Outro: React.FC = () => {

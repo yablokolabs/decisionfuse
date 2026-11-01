@@ -12,11 +12,11 @@ Category: Apps for Software Teams (Atlassian Codegeist 2026).
 
 Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:
 
-- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.2.0.
+- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.3.0.
 - Installed separately for **Jira** (`e63b5663-a630-468b-883a-cfcaf946d437`) and **Confluence** (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`). A Jira install does not grant Confluence access; both were required.
 - `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
-- `npx tsc --noEmit` clean; `npx vitest run` **46 tests passing** across six suites, plus a gated live-site suite.
-- The engine, proposal builder and approval gate ran against live site content: a withdrawn accepted decision raised findings on two linked issues, left the unlinked control alone, produced exact proposal text, and rejected a stale approval without writing. See [`evidence/2026-11-01-live-engine.md`](evidence/2026-11-01-live-engine.md).
+- `npx tsc --noEmit` clean; `npx vitest run` **49 tests passing** across six suites, plus a gated live-site suite.
+- The engine, proposal builder and approval gate ran against live site content: a withdrawn accepted decision flagged only the criterion sitting in the changed clause, reported the second linked criterion `unaffected`, left the unlinked control alone, produced exact proposal text, and rejected a stale approval without writing. See [`evidence/2026-11-01-live-engine.md`](evidence/2026-11-01-live-engine.md).
 - Deterministic domain: block extraction, formatting-insensitive hashing, span diffing, classification, evidence validation, proposal-bound approval, single-use approvals, tenant partitioning, replay-safe findings, reconcile-before-retry.
 - Deterministic proposals: the criterion sentence sharing the decision's subject is replaced and the rest is preserved; no shared subject means no proposal rather than a guess.
 - Read-only tool layer shared by the Rovo agent and the MCP server, with input allow-lists and fail-closed permission checks.
@@ -94,7 +94,7 @@ DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts
 | `static/hello-world` | Review panel bundle |
 | `tests` | Domain, permission, concurrency, reconciliation and tool tests |
 | `docs` | Build spec, verification notes, evaluation scenarios, progress |
-| `videos/decisionfuse-demo` | Remotion walkthrough (logo in intro and outro) |
+| `videos/decisionfuse-demo` | Remotion walkthrough, 3:23: drift, review loop, architecture, then a recorded run with the real finding and stale refusal. Logo in the intro and outro; silent, because narration synthesis was refused (see `evidence/2026-11-01-narration.md`) |
 
 ## Competition notes
 

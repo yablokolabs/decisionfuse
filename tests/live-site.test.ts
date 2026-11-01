@@ -144,7 +144,12 @@ describe.skipIf(!LIVE)('live site integration', () => {
 
     expect(v2.version).toBe(v1.version + 1);
     expect(analysis.status).toBe('analysed');
-    expect(analysis.findings.map((f) => f.issueKey).sort()).toEqual(['DFS-1', 'DFS-2']);
+    // Only the issue whose criterion sits in the withdrawn clause is queued.
+    expect(analysis.findings.map((f) => f.issueKey)).toEqual(['DFS-1']);
+    const recorded = await repo.listFindings('checkout-guest');
+    const dfs2 = recorded.find((f) => f.issueKey === 'DFS-2')!;
+    expect(dfs2.classification).toBe('unaffected');
+    expect(dfs2.lifecycle).toBe('analyzed');
 
     const dfs1 = analysis.findings.find((f) => f.issueKey === 'DFS-1')!;
     expect(dfs1.classification).toBe('obsolete-scope');

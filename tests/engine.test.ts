@@ -78,6 +78,41 @@ describe('analysis engine', () => {
     expect(finding.sourceSpan.quote.length).toBeGreaterThan(0);
   });
 
+  it('records an unaffected linked criterion without queueing it for review', async () => {
+    const { repo, clock, tenantId } = setup();
+    await register(repo, tenantId, decisionText);
+    await repo.putLink({
+      tenantId,
+      blockId: 'checkout-guest',
+      issueKey: 'OPS-13',
+      criterionId: 'ac-2',
+      createdBy: 'acc-owner',
+      acknowledgedTextHash: 'hash-v7',
+    });
+    const twoIssues = async (key: string) =>
+      key === 'OPS-13'
+        ? { fingerprint: 'fp-issue-2', criteria: [{ id: 'ac-2', text: 'Guest cart sessions must expire after 60 minutes.' }] }
+        : issue;
+    const outcome = await analyzeBlock(
+      {
+        repo,
+        fetchPage: async () => ({
+          version: 8,
+          text: pageWith('Guest checkout is no longer accepted.\nPayment must not require an account.'),
+        }),
+        fetchIssue: twoIssues,
+        now: clock,
+        newId: idSequence('f'),
+      },
+      { tenantId, pageId: 'page-1', blockId: 'checkout-guest' },
+    );
+    expect(outcome.findings.map((f) => f.issueKey)).toEqual(['OPS-12']);
+    const all = await repo.listFindings('checkout-guest');
+    const control = all.find((f) => f.issueKey === 'OPS-13')!;
+    expect(control.classification).toBe('unaffected');
+    expect(control.lifecycle).toBe('analyzed');
+  });
+
   it('does not duplicate findings when the same event is replayed', async () => {
     const { repo, clock, tenantId } = setup();
     await register(repo, tenantId, decisionText);
