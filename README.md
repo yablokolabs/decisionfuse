@@ -11,6 +11,12 @@ Catch Jira work that no longer matches a linked Confluence decision. DecisionFus
 
 Category: Apps for Software Teams (Atlassian Codegeist 2026).
 
+## Demo
+
+[Watch the demo — 2:23, MP4, 35 MB](https://github.com/yablokolabs/decisionfuse/releases/download/demo-2026-11-01/decisionfuse-demo-2m23.mp4)
+
+The drift, the review loop, the architecture, then a recorded run on a development site: the real finding, the exact proposed change, and a stale approval refused with nothing written. It is a release asset rather than a file in this repository, because a 35 MB video does not belong in git history. The music bed's licence is not recorded yet — see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
+
 ## What runs today
 
 Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:

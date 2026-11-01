@@ -2,6 +2,13 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-01 ~22:30 UTC / working tree after `2b3d5fd` / milestone M10 (demo published as a release asset)
+Changed:
+- README gains a `## Demo` link. The 2:23 file is hosted as release asset `demo-2026-11-01` → `decisionfuse-demo-2m23.mp4`, not committed: `videos/decisionfuse-demo/.gitignore` excludes `out/`, and a 35 MB binary in history is hard to undo if the licence falls through.
+Checks actually run: `git ls-files | grep .mp4` → none tracked; `git check-ignore -v` → `out/` ignored; `gh release create` → tag URL; `curl -IL` on the asset → **http 200**.
+Open: the music licence is still unrecorded, and the README and release notes say so. Deleting the release (`gh release delete demo-2026-11-01`) removes it cleanly if the track cannot be cleared.
+Next executable action: unchanged — panel click-through in a signed-in browser, then the admin MCP toggle.
+
 ## Checkpoint — 2026-11-01 ~22:20 UTC / working tree after `3dbb026` / milestone M9 (owner re-cut recorded, not reproduced)
 Changed:
 - Docs only. `evidence/2026-11-01-owner-recut.md` records what the replaced `out/video.mp4` actually is and why this tree cannot rebuild it; README, `THIRD_PARTY_NOTICES.md` and session notes point at it.
