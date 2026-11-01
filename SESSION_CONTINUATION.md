@@ -6,7 +6,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 - Forge CLI 15.0.0. Keychain login lapses between sessions; `FORGE_EMAIL` + `FORGE_API_TOKEN` from `~/.hermes/.env` (`ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`) authenticate without reinstall. `python-dotenv` is **not** installed on this host — parse the file by hand and never print values.
 - Authorized development site: `yablo.atlassian.net`. Products: Jira, Confluence, Jira Service Management, Customer Service Management.
 - Deployed `development` **v3.1.0**, eligible for the Runs on Atlassian program, installed for both products: Jira `e63b5663-a630-468b-883a-cfcaf946d437`, Confluence `ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`.
-- Synthetic site data: project `DFS`, issues `DFS-1`, `DFS-2`, `DFS-3`; Confluence page `426003` (space `SD`, space id `393220`) with accepted block `checkout-guest` at v1. Live-check page `426019` sits beside it at v3.
+- Synthetic site data: project `DFS`, issues `DFS-1`, `DFS-2`, `DFS-3`; Confluence page `426003` (space `SD`, space id `393220`) with accepted block `checkout-guest` at v1. Live-check page `426019` sits beside it at v3. Rebuild or verify the scenario with `npm run seed:synthetic` — idempotent, reports `existing` and never rewrites the page (`evidence/2026-11-01-synthetic-seed.md`).
 - Local state: `forge lint` clean, `tsc --noEmit` clean, 49 offline tests, live-site suite gated behind `DECISIONFUSE_LIVE=1`, panel bundle builds with esbuild.
 - `rovo:agent` and `rovo:mcp` with three read-only actions are deployed but never invoked. `https://mcp.atlassian.com/forge/<appId>` returns 404 (server OAuth metadata 200), so external exposure is off; the owner account holds `ADMINISTER`, and enabling is a UI toggle in Apps › Sites › site › Connected apps (evidence/2026-11-01-mcp-probe.md).
 - Demo video: 3:23 with narration. ElevenLabs refused with 402 (free tier 9907/10000), so the lines are spoken by local piper `en_GB-alba-medium` and muxed in (`scripts/narrate-local.py`); `scripts/voiceover.py` stays ready for the ElevenLabs voice if credits appear (evidence/2026-11-01-narration.md).
@@ -23,6 +23,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 4. Enable the three MCP tools per installation in Atlassian Administration, connect a supported client, record one redacted invocation each plus a denied case.
 5. Invoke the Rovo agent in chat for the three supported questions and record transcripts.
 6. Only after 1-5: mark Rovo/MCP eligibility verified, then regenerate the architecture PNG and re-render the video.
-7. Fixed: `classifyChange` now compares the changed clause with the criterion's head nouns, so `DFS-2` is reported unaffected instead of flagged.
+7. Seeding is not proof: `npm run seed:synthetic` rebuilds the site scenario over REST as the owner. It does not invoke the Forge runtime, so it cannot move items 1-6.
+8. Fixed: `classifyChange` now compares the changed clause with the criterion's head nouns, so `DFS-2` is reported unaffected instead of flagged.
 
 Update this file at every checkpoint with commit, milestone, exact commands/results, blockers and next step. No credentials or customer data.

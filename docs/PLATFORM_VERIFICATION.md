@@ -46,6 +46,7 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Site products | REST probes | Jira 200, Confluence 200 authenticated, JSM servicedesk API 200, 0 Jira projects before seeding |
 | Project creation shape | `POST /rest/api/3/project` vs `/rest/api/2/project` | v3 with `projectTemplateModuleKey` → 400; v2 with `projectTemplateKey` → 201 |
 | Block extraction input | page `426003` storage body | `BEGIN DECISION checkout-guest status=accepted` present and normalized |
+| Synthetic scenario seed | `npm run seed:synthetic` | Idempotent: project `DFS`, `DFS-1`–`DFS-3` and page `426003` all reported `existing`, page version stayed **1**. Seeds content as the calling user over REST; does not invoke the Forge runtime. `evidence/2026-11-01-synthetic-seed.md` |
 | Review loop | panel resolver | **Not invoked** — needs a signed-in browser session |
 | Engine on live content | `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` | Passed 4.1s: page `426019` seeded, withdrawn at v2, findings on `DFS-1`/`DFS-2`, none on unlinked `DFS-3`, proposal text exact, v3 approval rejected `stale-source` with `writes: 0` |
 | Forge runtime path | resolver calls as the signed-in user | **Unverified.** The live check uses the owner's API token, not `asUser()`, so platform permission delegation and Forge storage are untested |

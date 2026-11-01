@@ -86,3 +86,5 @@ lead returned `201` for all three issues.
   `tests/tools.test.ts`.
 - Nothing was written to Jira or Confluence by the app itself. All objects above
   were created by direct REST calls as the owner, to prepare the scenario.
+  The scenario is now reproducible with `npm run seed:synthetic`; see
+  `evidence/2026-11-01-synthetic-seed.md`.

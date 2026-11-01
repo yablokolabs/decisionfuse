@@ -77,6 +77,9 @@ npm test
 forge lint
 (cd static/hello-world && npm install && npm run build)
 
+# Synthetic Jira project + Confluence page; idempotent, same credentials
+npm run seed:synthetic
+
 # Real-site domain check; needs FORGE_EMAIL and FORGE_API_TOKEN in the environment
 DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts
 ```

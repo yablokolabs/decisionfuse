@@ -2,6 +2,14 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-01 ~21:15 UTC / working tree after `37ae687` / milestone M7 (reproducible synthetic scenario)
+Changed:
+- `scripts/seed-synthetic.mjs` (new) and `npm run seed:synthetic`: idempotent seeding of project `DFS`, issues `DFS-1`–`DFS-3` and page `426003` holding block `checkout-guest`. Objects are found by summary and page title, so a re-run writes nothing and cannot bump the page version that a stored baseline depends on.
+- The scenario previously existed only because it was created by hand over REST, which meant nobody could rebuild it after the live check mutated pages.
+Checks actually run: `node --check scripts/seed-synthetic.mjs` → `syntax: ok`; `npm run seed:synthetic` against `yablo.atlassian.net` → exit 0, every object `existing`, page still **version 1** (`evidence/2026-11-01-synthetic-seed.md`).
+Capability status: the synthetic scenario is rebuildable by anyone holding a token. Seeding is REST as the calling user, so the Forge-runtime resolver path, the Rovo agent and the MCP tools remain **unproven**.
+Next executable action: unchanged — panel click-through on page `426003` and `DFS-1` in a signed-in browser, then the admin MCP toggle.
+
 ## Checkpoint — 2026-11-01 ~20:40 UTC / working tree after `e0c1ce8` plus uncommitted changes / milestone M6 (classifier fix, MCP probe, demo scenes)
 Changed:
 - `src/domain/classify.ts`: new `changedClause()` and `subjectTokens()`. A withdrawal now only flags a criterion whose head nouns sit in the changed clause; a criterion in an untouched clause is reported `unaffected`. This replaces a keyword test that matched against the whole block, which is why `DFS-2` was a false positive.
