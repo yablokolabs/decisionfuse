@@ -1,0 +1,22 @@
+# OS metadata
+.DS_Store
+
+# Dependencies and Forge build output
+node_modules/
+dist/
+out/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Forge local state and app secrets
+.forge/
+*.env
+.env*
+!.env.example
+!*.env.example
+
+# Media/render intermediates
+videos/tmp/
+*.log

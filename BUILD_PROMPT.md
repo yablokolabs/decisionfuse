@@ -1,0 +1,17 @@
+# Build DecisionFuse on Ubuntu
+Implement this kit. Read AGENTS.md, PROJECT_BUILD.md, docs/PLATFORM_VERIFICATION.md and docs/PROGRESS.md first. Preserve unrelated files, git edits, CLI credentials and developer site data. Forge CLI is already installed: inspect `forge --version`, available help, auth status and supported Node runtime before changing anything. Do not reinstall by default.
+
+Execute the authorized implementation rather than stopping at a plan. Complete code and local checks when site access is missing; ask only for the missing account/site information and continue independent work.
+
+1. Verify Forge CLI, authentication, current API/module contracts, installation scopes and cross-product compatibility. Build a minimal installed Jira + Confluence read path on a dedicated authorized development site. Do not assume installing into Jira also grants Confluence access.
+2. Build explicit decision-to-issue links, immutable baselines, version-aware change detection and an async idempotent analysis queue. Use Forge-hosted functions and supported Forge persistence with tenant partitioning. No external production server is needed for the core.
+3. Build evidence-grounded impact findings and a coherent Jira review interface: source diff, affected criterion, proposed exact change, owner and approval. Distinguish requirement correction, obsolete scope and uncertain impact. Include unaffected controls.
+4. Implement proposal-bound approval, permission rechecks, stale source/issue rejection, safe retry and audit records. No model or agent can directly mutate arbitrary issue content or close work. Never overwrite the whole issue document to change one criterion.
+5. Add a Rovo agent using verified modules and tools backed by the same services. Add read-only Forge MCP tools only after core reliability. Verify Teamwork Graph separately; a local graph of Jira links does not qualify as TWG API use. Track unsupported or unavailable capabilities honestly.
+6. Run meaningful domain, permission, concurrency and real-site integration checks. Freeze held-out cases before final evaluation. Create architecture through diagram-design, SVG to PNG, embed in README. Produce genuine app footage with videowright, under five minutes, using ElevenLabs British adult female stock narration if a key is available. No paid subscription or new provider automatically.
+
+Use docs/SESSION_TOOLING.md: Hindsight bank decisionfuse on configured port 8888, context-mode, Nori senior-swe, Ponytail, Headroom, ADHD and stop-slop when discoverable. Read actual skill instructions; do not invent tool calls or claim unavailable tools ran. Checkpoint after milestones and every 30 minutes.
+
+No footers, attribution strips, powered-by text, decorative signatures or badges in authored assets/UI/docs/video. Preserve required third-party legal notices in dedicated license/disclosure files. Do not remove Atlassian's own product chrome. Read secrets from ~/.hermes/.env only by explicitly needed variable names using a dotenv parser; never source, dump, copy or commit the shared file. Forge authentication is separate from inference credentials. Do not assume Meta hackathon keys are authorized for this competition.
+
+Prepare a reviewable installation/release and submission artifacts. Deploy/install into the user's designated development site as needed; get explicit authorization before public publishing, Marketplace submission, external messages or final competition submission. Do not stop for routine implementation approvals.
