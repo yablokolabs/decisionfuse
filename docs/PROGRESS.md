@@ -11,6 +11,7 @@ Changed:
 Checks actually run: `npx tsc --noEmit` → 0; `npx vitest run` → 6 files / 49 tests; `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` → 1 passed (4.0s), findings now `['DFS-1']` only, `DFS-2` recorded `unaffected`/`analyzed`, `DFS-3` unlinked, proposal text unchanged, stale refusal `stale-source` with `writes: 0`; `forge lint` → No issues found; `forge deploy -e development` → `✔ Deployed` 2.3.0; video `npx tsc -p .` → 0.
 MCP probe (`evidence/2026-11-01-mcp-probe.md`): `mcp.atlassian.com/forge/<appId>` → **404**, `/.well-known/oauth-protected-resource` → 404, server OAuth metadata → 200. The owner account holds `ADMINISTER`, so rights are not the blocker; external exposure is off and the documented toggle is UI-only.
 Narration: ElevenLabs voice listing succeeded, synthesis returned **402 Payment Required** on the account, so the video is silent and no paid plan was created (`evidence/2026-11-01-narration.md`).
+Render: `npx remotion render Video out/video.mp4 --concurrency=4` completed; `ffprobe` reports **203.0 s** (3:23), inside the five-minute cap. Scene stills inspected before rendering (`stills/chk7/sheet.jpg`).
 Next executable action: enable the three MCP tools in Atlassian Administration, connect a supported client and record one redacted invocation; then click the panel path through the Forge runtime.
 
 ## Checkpoint — 2026-11-01 ~19:25 UTC / working tree after `d38ab63` / milestone M5 (proposal + approval reachable, live engine proof)
