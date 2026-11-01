@@ -95,7 +95,7 @@ DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts
 | `static/hello-world` | Review panel bundle |
 | `tests` | Domain, permission, concurrency, reconciliation and tool tests |
 | `docs` | Build spec, verification notes, evaluation scenarios, progress |
-| `videos/decisionfuse-demo` | Remotion walkthrough, 3:23: drift, review loop, architecture, then a recorded run with the real finding and stale refusal. Logo in the intro and outro; silent, because narration synthesis was refused (see `evidence/2026-11-01-narration.md`) |
+| `videos/decisionfuse-demo` | Remotion walkthrough, 3:23: drift, review loop, architecture, then a recorded run with the real finding and stale refusal. Logo in the intro and outro; narrated with piper `en_GB-alba-medium` after ElevenLabs refused on its free-tier cap (see `evidence/2026-11-01-narration.md`) |
 
 ## Competition notes
 

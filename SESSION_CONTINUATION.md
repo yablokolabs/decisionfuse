@@ -9,7 +9,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 - Synthetic site data: project `DFS`, issues `DFS-1`, `DFS-2`, `DFS-3`; Confluence page `426003` (space `SD`, space id `393220`) with accepted block `checkout-guest` at v1. Live-check page `426019` sits beside it at v3.
 - Local state: `forge lint` clean, `tsc --noEmit` clean, 49 offline tests, live-site suite gated behind `DECISIONFUSE_LIVE=1`, panel bundle builds with esbuild.
 - `rovo:agent` and `rovo:mcp` with three read-only actions are deployed but never invoked. `https://mcp.atlassian.com/forge/<appId>` returns 404 (server OAuth metadata 200), so external exposure is off; the owner account holds `ADMINISTER`, and enabling is a UI toggle in Apps › Sites › site › Connected apps (evidence/2026-11-01-mcp-probe.md).
-- Demo video: 3:23, silent. ElevenLabs returned 402 on synthesis, so `narration.json` and `scripts/voiceover.py` are ready but unused (evidence/2026-11-01-narration.md).
+- Demo video: 3:23 with narration. ElevenLabs refused with 402 (free tier 9907/10000), so the lines are spoken by local piper `en_GB-alba-medium` and muxed in (`scripts/narrate-local.py`); `scripts/voiceover.py` stays ready for the ElevenLabs voice if credits appear (evidence/2026-11-01-narration.md).
 - `forge deploy` fails if `tsconfig.json` sets `noEmit: true` — Forge's ts-loader then emits nothing. Keep `noEmit` false and pass `--noEmit` in the npm scripts.
 
 ## What is proven, and what is not
