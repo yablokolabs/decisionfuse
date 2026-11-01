@@ -10,20 +10,23 @@ Category: Apps for Software Teams (Atlassian Codegeist 2026).
 
 ## What runs today
 
-Local, verified on 2026-11-01:
+Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:
 
-- Forge app registered as `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4` in the `DecisionFuse` Developer Space.
+- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.0.0.
+- Installed separately for **Jira** (`e63b5663-a630-468b-883a-cfcaf946d437`) and **Confluence** (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`). A Jira install does not grant Confluence access; both were required.
 - `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
 - `npx tsc --noEmit` clean; `npx vitest run` **40 tests passing** across five suites.
 - Deterministic domain: block extraction, formatting-insensitive hashing, span diffing, classification, evidence validation, proposal-bound approval, single-use approvals, tenant partitioning, replay-safe findings, reconcile-before-retry.
 - Read-only tool layer shared by the Rovo agent and the MCP server, with input allow-lists and fail-closed permission checks.
 
+Synthetic scenario seeded on that site: project `DFS` with `DFS-1`/`DFS-2` and the unaffected control `DFS-3`, plus Confluence page `426003` holding an accepted `checkout-guest` decision block. See [`evidence/2026-11-01-site-install.md`](evidence/2026-11-01-site-install.md).
+
 Not yet verified — do not assume it works:
 
-- No deployment and no installation. No real Jira or Confluence request has run, so the review loop is unproven end to end.
+- The review loop has not been run on the site. Register, link, rescan and approve are resolver calls reached only from the Jira issue panel in a signed-in browser session, which this build environment does not have. Nothing has been written to Jira or Confluence by the app.
 - The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure. Bonus eligibility is not claimed.
+- No reviewer-without-write-permission or denied-source-access accounts exist on the site. Those paths are covered only by mocked tests.
 - Teamwork Graph is not used. No Marketplace listing exists.
-- The UI bundle builds, but its resolvers have only been exercised against fakes.
 
 ## Architecture
 

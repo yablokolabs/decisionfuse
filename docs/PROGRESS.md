@@ -1,6 +1,17 @@
 # Progress
-Status: M1 CORE + ROVO/MCP MODULES IMPLEMENTED LOCALLY; NOT DEPLOYED, NOT INSTALLED, NO REAL-SITE PROOF, NO TOOL INVOCATION.
+Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2). Site seeded with synthetic data. Review-loop invocation, Rovo agent call and MCP call still unproven — they need a signed-in browser session.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
+
+## Checkpoint — 2026-11-01 ~18:20 UTC / working tree after `3062cc2` / milestone M2 (deployed + installed)
+Changed:
+- `tsconfig.json` `noEmit` false; `build` script now `tsc --noEmit`. Forge's ts-loader emitted no output with `noEmit: true`, which failed `forge deploy`.
+- Deployed `development` v2.0.0. Installed separately for Jira (`e63b5663-a630-468b-883a-cfcaf946d437`) and Confluence (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`) on `yablo.atlassian.net` by the owner's instruction.
+- Seeded synthetic site data: project `DFS`, issues `DFS-1`/`DFS-2`/`DFS-3`, Confluence page `426003` in space `SD` holding accepted block `checkout-guest` at version 1.
+- `evidence/2026-11-01-site-install.md` records the commands, ids and limitations.
+Checks actually run: `forge deploy` → `✔ Deployed`; `forge install -p Jira` → complete; `forge install -p Confluence` → complete; `forge install list` → both rows `Up-to-date`; REST probes → Jira 200, Confluence 200 authenticated / 403 unauthenticated, JSM 200; project create `201`; three issues `201`; page create `200`; block marker confirmed in storage body.
+Capability status: deployed and installed — verified. Review loop, Rovo agent and MCP tools — declared and installed, **never invoked**.
+Open issue: resolver calls (register, link, rescan, approve) are reachable only from the Jira issue panel in a signed-in browser; this host has no browser session.
+Next executable action: a human opens the DecisionFuse panel on `DFS-1`, registers `checkout-guest` on page `426003`, links `ac-1`, rescans, then edits the page to "guest checkout is disabled" and rescanning again; capture the panel output into `evidence/`.
 
 ## Checkpoint — 2026-11-01 ~17:40 UTC / working tree after `4395204` / milestone M4 (modules declared)
 Changed:

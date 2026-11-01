@@ -32,4 +32,21 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Teamwork Graph | not testable | No site connected, so entitlement and API access are unverified. Native Jira/Confluence links are not TWG use |
 | Tenant entitlements | not testable | Rovo availability, admin policies and cross-product install require a real site |
 
-Consequences for claims: Rovo and MCP modules are **declared and lint-clean but never invoked**. No bonus eligibility is claimed until a real invocation and an admin enablement are recorded here with redacted output.
+## Verification results, 2026-11-01 (site `yablo.atlassian.net`)
+
+| Item | Command or request | Result |
+| --- | --- | --- |
+| CLI authentication | `forge whoami` with `FORGE_EMAIL`/`FORGE_API_TOKEN` | Logged in; keychain login had lapsed, token env auth works |
+| Deployment | `forge deploy -e development` | v2.0.0 deployed after fixing `noEmit` in `tsconfig.json` |
+| Jira install | `forge install -p Jira -e development` | Complete, installation `e63b5663-a630-468b-883a-cfcaf946d437` |
+| Confluence install | `forge install -p Confluence -e development` | Complete, installation `ca73eaa3-ea71-4e76-a8e9-89cf74520fe2` |
+| Cross-product scopes | install output | Jira install explicitly required a separate Confluence install; no implied access |
+| Site products | REST probes | Jira 200, Confluence 200 authenticated, JSM servicedesk API 200, 0 Jira projects before seeding |
+| Project creation shape | `POST /rest/api/3/project` vs `/rest/api/2/project` | v3 with `projectTemplateModuleKey` → 400; v2 with `projectTemplateKey` → 201 |
+| Block extraction input | page `426003` storage body | `BEGIN DECISION checkout-guest status=accepted` present and normalized |
+| Review loop | panel resolver | **Not invoked** — needs a signed-in browser session |
+| Rovo agent | `rovo:agent` | **Not invoked**, no conversation recorded |
+| MCP tools | `rovo:mcp` | **Not invoked**; exposure disabled until a site admin enables each tool |
+| Teamwork Graph | — | Not tested, not used. Jira/Confluence links are not TWG evidence |
+
+Consequences for claims: deployment and installation are **verified**. The review loop, Rovo agent and MCP tools are **installed but never invoked**. No bonus eligibility is claimed until a real invocation and an admin enablement are recorded here with redacted output.
