@@ -49,6 +49,7 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Review loop | panel resolver | **Not invoked** — needs a signed-in browser session |
 | Engine on live content | `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` | Passed 4.1s: page `426019` seeded, withdrawn at v2, findings on `DFS-1`/`DFS-2`, none on unlinked `DFS-3`, proposal text exact, v3 approval rejected `stale-source` with `writes: 0` |
 | Forge runtime path | resolver calls as the signed-in user | **Unverified.** The live check uses the owner's API token, not `asUser()`, so platform permission delegation and Forge storage are untested |
+| Browser-free runtime hook | token-gated `webtrigger` calling `analyzeBlock` | **Failed.** Deploy needed `--approve MAJOR_VERSION_RULE` and cost RoA eligibility at 3.0.0; all three invocations returned **424** with no handler output. Module reverted, 3.1.0 redeployed and `forge eligibility` re-verified. `evidence/2026-11-01-runtime-proof-attempt.md` |
 | Proposal and approval gate | `src/domain/propose.ts`, `src/review/apply.ts` | Reachable from the panel, exercised on live data over REST; not yet through the runtime |
 | MCP tool enablement | Atlassian Administration | **Still disabled.** The account holds site `ADMINISTER`; the toggle is Apps › Sites › site › Connected apps and has no documented API. See `evidence/2026-11-01-mcp-probe.md` |
 | Rovo agent | `rovo:agent` | **Not invoked**, no conversation recorded |

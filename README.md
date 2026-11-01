@@ -12,7 +12,7 @@ Category: Apps for Software Teams (Atlassian Codegeist 2026).
 
 Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:
 
-- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.3.0.
+- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v3.1.0, eligible for the Runs on Atlassian program.
 - Installed separately for **Jira** (`e63b5663-a630-468b-883a-cfcaf946d437`) and **Confluence** (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`). A Jira install does not grant Confluence access; both were required.
 - `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
 - `npx tsc --noEmit` clean; `npx vitest run` **49 tests passing** across six suites, plus a gated live-site suite.
@@ -26,7 +26,8 @@ Synthetic scenario seeded on that site: project `DFS` with `DFS-1`/`DFS-2` and t
 Not yet verified — do not assume it works:
 
 - The review loop has not run through the Forge runtime. Register, link, rescan, propose and approve are resolver calls reached only from the panel in a signed-in browser session, which this build environment does not have. The domain has run against live content over REST, but nothing has been written to Jira or Confluence by the app itself.
-- The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure. Bonus eligibility is not claimed.
+- The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure: the app endpoint returns 404 while the MCP server's own OAuth metadata returns 200. Bonus eligibility is not claimed.
+- A browser-free runtime hook was attempted and failed: a token-gated web trigger needed a major-version approval, dropped Runs on Atlassian eligibility, then returned `424` on every call without reaching the handler. It was reverted and eligibility restored. See [`evidence/2026-11-01-runtime-proof-attempt.md`](evidence/2026-11-01-runtime-proof-attempt.md).
 - No reviewer-without-write-permission or denied-source-access accounts exist on the site. Those paths are covered only by mocked tests.
 - Teamwork Graph is not used. No Marketplace listing exists.
 

@@ -5,7 +5,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 - Repository: https://github.com/yablokolabs/decisionfuse (public, `main`). No attribution footers anywhere; keep it that way.
 - Forge CLI 15.0.0. Keychain login lapses between sessions; `FORGE_EMAIL` + `FORGE_API_TOKEN` from `~/.hermes/.env` (`ATLASSIAN_EMAIL`, `ATLASSIAN_API_TOKEN`) authenticate without reinstall. `python-dotenv` is **not** installed on this host — parse the file by hand and never print values.
 - Authorized development site: `yablo.atlassian.net`. Products: Jira, Confluence, Jira Service Management, Customer Service Management.
-- Deployed `development` **v2.3.0**, installed for both products: Jira `e63b5663-a630-468b-883a-cfcaf946d437`, Confluence `ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`.
+- Deployed `development` **v3.1.0**, eligible for the Runs on Atlassian program, installed for both products: Jira `e63b5663-a630-468b-883a-cfcaf946d437`, Confluence `ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`.
 - Synthetic site data: project `DFS`, issues `DFS-1`, `DFS-2`, `DFS-3`; Confluence page `426003` (space `SD`, space id `393220`) with accepted block `checkout-guest` at v1. Live-check page `426019` sits beside it at v3.
 - Local state: `forge lint` clean, `tsc --noEmit` clean, 49 offline tests, live-site suite gated behind `DECISIONFUSE_LIVE=1`, panel bundle builds with esbuild.
 - `rovo:agent` and `rovo:mcp` with three read-only actions are deployed but never invoked. `https://mcp.atlassian.com/forge/<appId>` returns 404 (server OAuth metadata 200), so external exposure is off; the owner account holds `ADMINISTER`, and enabling is a UI toggle in Apps › Sites › site › Connected apps (evidence/2026-11-01-mcp-probe.md).
@@ -14,7 +14,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 
 ## What is proven, and what is not
 - Proven: deployment, both installs, the byline module rendering on a real page, and — over REST against live content — baseline capture, drift detection on the affected criterion only (`DFS-2` reported `unaffected` after the subject fix), no finding on the unlinked control, exact proposal text, stale-source refusal with zero writes (evidence/2026-11-01-live-engine.md).
-- Not proven: any resolver call through the Forge runtime, the queue consumer, Rovo agent invocation, MCP invocation and admin tool enablement. Denied-access paths are mocked only out of necessity: the site has no second account.
+- Not proven: any resolver call through the Forge runtime, the queue consumer, Rovo agent invocation, MCP invocation and admin tool enablement. A token-gated `webtrigger` was tried as a browser-free runtime hook: it needed `--approve MAJOR_VERSION_RULE`, dropped RoA eligibility at 3.0.0, and returned **424** on all three calls with no handler output, so it was reverted and 3.1.0 re-verified as RoA eligible (`evidence/2026-11-01-runtime-proof-attempt.md`). Denied-access paths are mocked only out of necessity: the site has no second account.
 
 ## Next executable actions
 1. **Needs a human browser.** On page `426003`, open the DecisionFuse byline panel: Register `checkout-guest`, link `DFS-1`/`ac-1` and `DFS-3`/`ac-1`, then edit the block to "Guest checkout is no longer enabled for first-time buyers." and Rescan. Expect two findings, one of them the `DFS-3` control.

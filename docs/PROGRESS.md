@@ -1,5 +1,5 @@
 # Progress
-Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2.3.0). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
+Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
 ## Checkpoint — 2026-11-01 ~20:40 UTC / working tree after `e0c1ce8` plus uncommitted changes / milestone M6 (classifier fix, MCP probe, demo scenes)
@@ -12,6 +12,7 @@ Checks actually run: `npx tsc --noEmit` → 0; `npx vitest run` → 6 files / 49
 MCP probe (`evidence/2026-11-01-mcp-probe.md`): `mcp.atlassian.com/forge/<appId>` → **404**, `/.well-known/oauth-protected-resource` → 404, server OAuth metadata → 200. The owner account holds `ADMINISTER`, so rights are not the blocker; external exposure is off and the documented toggle is UI-only.
 Narration: ElevenLabs voice listing succeeded, synthesis returned **402 Payment Required** on the account, so the video is silent and no paid plan was created (`evidence/2026-11-01-narration.md`).
 Render: `npx remotion render Video out/video.mp4 --concurrency=4` completed; `ffprobe` reports **203.0 s** (3:23), inside the five-minute cap. Scene stills inspected before rendering (`stills/chk7/sheet.jpg`).
+Runtime proof attempt (failed, then reverted): a token-gated `webtrigger` was added to run `analyzeBlock` inside Forge. Deploying it required `--approve MAJOR_VERSION_RULE` and **dropped Runs on Atlassian eligibility at 3.0.0**; after upgrading both installs a trigger URL was issued, but all three invocations returned **424 Failed Dependency** with no handler output. Module and handler were reverted, redeployed **3.1.0**, `forge lint` clean and `forge eligibility` reports eligible again. Detail: `evidence/2026-11-01-runtime-proof-attempt.md`. The runtime path stays unproven.
 Next executable action: enable the three MCP tools in Atlassian Administration, connect a supported client and record one redacted invocation; then click the panel path through the Forge runtime.
 
 ## Checkpoint — 2026-11-01 ~19:25 UTC / working tree after `d38ab63` / milestone M5 (proposal + approval reachable, live engine proof)
