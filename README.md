@@ -106,7 +106,7 @@ The live suite seeds the scenario itself and deletes the page it creates, so a r
 | `static/hello-world` | Review panel bundle |
 | `tests` | Domain, permission, concurrency, reconciliation and tool tests |
 | `docs` | Build spec, verification notes, evaluation scenarios, progress |
-| `videos/decisionfuse-demo` | Remotion walkthrough, 3:23: drift, review loop, architecture, then a recorded run with the real finding and stale refusal. Logo in the intro and outro; narrated with piper `en_GB-alba-medium` after ElevenLabs refused on its free-tier cap (see `evidence/2026-11-01-narration.md`) |
+| `videos/decisionfuse-demo` | Remotion walkthrough. This tree renders 3:23: drift, review loop, architecture, then a recorded run with the real finding and stale refusal. The `out/video.mp4` beside it is a **2:23 owner re-cut** with a music bed and an animated architecture scene, whose source is not in this repository — see [`evidence/2026-11-01-owner-recut.md`](evidence/2026-11-01-owner-recut.md). Logo in the intro and outro; narrated with piper `en_GB-alba-medium` after ElevenLabs refused on its free-tier cap (see `evidence/2026-11-01-narration.md`) |
 
 ## Competition notes
 

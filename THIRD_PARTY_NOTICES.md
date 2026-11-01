@@ -20,6 +20,7 @@ This file carries the license obligations for third-party components used by Dec
 | Remotion and `@remotion/*` | Remotion License | Walkthrough video. Free for individuals and companies under the license threshold; a paid company licence applies above it. Check https://remotion.dev/license before publishing. |
 | Fontsource packages (`@fontsource/*`) | SIL Open Font License 1.1 | Fonts bundled into the video |
 | Playwright Chromium | Apache License 2.0 | Stills and diagram rasterization |
+| Music bed in the 2:23 demo re-cut | **not recorded** | Audio under the narration. Composer, source and licence are unknown; record them here before any public publication. |
 
 ## Method references
 

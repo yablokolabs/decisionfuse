@@ -1,0 +1,33 @@
+# Owner re-cut of the demo — 2026-11-01
+
+`videos/decisionfuse-demo/out/video.mp4` was replaced after the narrated render was
+recorded. It is a different cut, and the source in this repository cannot produce
+it. Recorded so nothing downstream describes it wrongly.
+
+## What the file actually is (measured)
+
+| Property | Value | How |
+| --- | --- | --- |
+| Duration | **143.300 s (2:23)** | `ffprobe` |
+| Streams | h264 1920x1080, aac mono 48 kHz | `ffprobe` |
+| Continuous audio | **0** silences >= 0.8 s at -32 dB | `silencedetect` |
+| Audio from the first frame | mean -14.6 dB over 0-2 s | `volumedetect` |
+| Chapters (HUD) | **5**: drift, review loop, architecture, recorded run, status | frames at 10/30/50/70/90/110/130/140 s |
+| Outro | logo, "Decisions change. Work should catch up.", repo URL | same contact sheet |
+
+Zero silence gaps is what a music bed looks like; a narration-only cut leaves gaps
+between lines. So the claimed music bed is present in the file, and the 5-minute cap
+is still met with room to spare.
+
+## Why this tree cannot re-render it
+
+- `storyboard.tsx` totals **203 s**, and `Root.tsx` derives the composition duration from `TOTAL_SECONDS`.
+- `AUDIO.voiceover` is `null` and `public/` holds no audio file; nothing in `src/` references a music bed.
+- `Architecture.tsx` is 77 lines with no `interpolate`, `useCurrentFrame` or `spring` calls, so it is static here.
+- `git log -- videos` has no change after `37ae687`; the tree is clean, with no branch, stash or worktree holding the edits.
+
+## Open items
+
+1. **Source for the re-cut.** Storyboard timings, the scene changes and the audio asset need to be committed, or the video cannot be rebuilt, corrected or re-narrated.
+2. **Music licence.** Composer, source and licence must go into `THIRD_PARTY_NOTICES.md` before the file is published anywhere. Until that is recorded, treat the file as not publishable.
+3. **Sync.** The owner reports the sync was fixed. It cannot be re-verified here without this cut's narration timing, so it stays owner-reported rather than verified.

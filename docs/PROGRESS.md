@@ -2,6 +2,14 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-01 ~22:20 UTC / working tree after `3dbb026` / milestone M9 (owner re-cut recorded, not reproduced)
+Changed:
+- Docs only. `evidence/2026-11-01-owner-recut.md` records what the replaced `out/video.mp4` actually is and why this tree cannot rebuild it; README, `THIRD_PARTY_NOTICES.md` and session notes point at it.
+Measured: `ffprobe` → **143.300 s**, h264 + aac mono 48 kHz; `silencedetect` at -32 dB → **0** gaps (music bed), first 2 s mean -14.6 dB; contact sheet at 10/30/50/70/90/110/130/140 s → 5 chapters, animated architecture, recorded run earlier, outro with logo and no attribution strip.
+Not produced by this source: `storyboard.tsx` totals 203 s, `AUDIO.voiceover` is `null`, `public/` has no audio, `Architecture.tsx` is static (no `interpolate`/`useCurrentFrame`/`spring`), and git shows no video change after `37ae687`.
+Open: the re-cut's source and the music licence. Neither can be invented here, and the file must not be published before the licence is recorded.
+Next executable action: unchanged — panel click-through in a signed-in browser, then the admin MCP toggle.
+
 ## Checkpoint — 2026-11-01 ~22:00 UTC / working tree after `e74b210` / milestone M8 (test hygiene, permissions fixture, theme-safe logo)
 Changed:
 - `tests/live-site.test.ts`: `beforeAll` runs `scripts/seed-synthetic.mjs`, `afterAll` deletes the page the run created. The suite no longer depends on hand-made content and no longer accumulates orphan pages.
