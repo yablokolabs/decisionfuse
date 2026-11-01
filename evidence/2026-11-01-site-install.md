@@ -20,7 +20,9 @@ No Customer Service Management project was created or tested.
 
 ## App deployment
 
-Environment `development`, version 2 (`2.0.0`).
+Environment `development`, versions `2.0.0` then `2.1.0` (page-mode panel). Installation rows keep showing major version `2`, which is the major version of the install, not the deployment.
+
+The Confluence byline module renders on the seeded page: page `426003` shows a `DecisionFuse (Development)` entry in the byline, which confirms the Confluence install is live and the module resolves on a real page.
 
 ```
 $ forge deploy -e development --non-interactive

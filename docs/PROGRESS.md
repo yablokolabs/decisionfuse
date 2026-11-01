@@ -2,6 +2,15 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2). Site seeded with synthetic data. Review-loop invocation, Rovo agent call and MCP call still unproven — they need a signed-in browser session.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-01 ~18:40 UTC / working tree after `e6d63b0` / milestone M3 (page panel)
+Changed:
+- `src/index.ts`: new `pageBlocks` resolver; `context` now returns the Confluence `pageId`; `linkIssue` validates block id, issue key and criterion id.
+- Storage partition fix: resolvers were writing to a per-cloud-id partition while the Rovo/MCP tools read the installation partition, so tools could never have seen panel data. Both now use `INSTALLATION_SCOPE`.
+- `static/hello-world/src/index.tsx`: page mode for the Confluence byline item — lists fenced blocks with status and baseline, Register/Re-baseline, Rescan, explicit link form and the finding list. Jira issue mode unchanged.
+Checks actually run: `npx tsc --noEmit` → 0; `npx vitest run` → 5 files / 40 tests; `forge lint` → No issues found; `npm run build` (UI) → `build/app.js 240.3kb`; `forge deploy -e development` → `✔ Deployed` v2.1.0.
+Capability status: panel now covers the register/link/rescan path on a real Confluence page. Still no invocation recorded end to end — the owner confirmed the byline item renders, but the panel has not been clicked through with data in it.
+Next executable action: owner reloads page `426003`, opens the DecisionFuse byline panel, registers `checkout-guest`, links `DFS-1`/`ac-1`, rescans; then edit the block to "guest checkout is disabled" and rescan again.
+
 ## Checkpoint — 2026-11-01 ~18:20 UTC / working tree after `3062cc2` / milestone M2 (deployed + installed)
 Changed:
 - `tsconfig.json` `noEmit` false; `build` script now `tsc --noEmit`. Forge's ts-loader emitted no output with `noEmit: true`, which failed `forge deploy`.

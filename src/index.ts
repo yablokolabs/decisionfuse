@@ -22,8 +22,14 @@ function context(req: { context: Record<string, any> }): Context {
   return { tenantId, accountId };
 }
 
-function repoFor(tenantId: string) {
-  return new Repository(forgeKv, tenantId);
+/**
+ * Forge storage is already partitioned per installation, so every surface uses
+ * the same partition. The tenant id stays in records for audit, but it never
+ * selects a storage namespace - otherwise the panel and the MCP tools would
+ * read different data.
+ */
+function repoFor() {
+  return new Repository(forgeKv, INSTALLATION_SCOPE);
 }
 
 function newId(): string {
@@ -46,14 +52,17 @@ resolver.define('registerDecision', async (req) => {
     text: block.body,
     now: new Date().toISOString(),
   });
-  await repoFor(tenantId).putDecision(decision);
+  await repoFor().putDecision(decision);
   return { blockId: decision.blockId, status: decision.status, baselineVersion: decision.baselineVersion };
 });
 
 resolver.define('linkIssue', async (req) => {
   const { tenantId, accountId } = context(req);
   const { blockId, issueKey, criterionId } = req.payload as { blockId: string; issueKey: string; criterionId: string };
-  const repo = repoFor(tenantId);
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(blockId ?? '')) throw new Error('Invalid decision block id');
+  if (!/^[A-Z][A-Z0-9_]{0,15}-\d{1,9}$/.test(issueKey ?? '')) throw new Error('Invalid issue key');
+  if (!/^ac-\d{1,4}$/.test(criterionId ?? '')) throw new Error('Invalid criterion id');
+  const repo = repoFor();
   const decision = await repo.getDecision(blockId);
   if (!decision) throw new Error(`Register decision ${blockId} before linking work`);
   await repo.putLink({
@@ -72,7 +81,7 @@ resolver.define('rescan', async (req) => {
   const { pageId, blockId } = req.payload as { pageId: string; blockId: string };
   const outcome = await analyzeBlock(
     {
-      repo: repoFor(tenantId),
+      repo: repoFor(),
       fetchPage: async (id) => {
         const page = await fetchPageText(id);
         return { version: page.version, text: page.text };
@@ -88,14 +97,37 @@ resolver.define('rescan', async (req) => {
 
 resolver.define('context', async (req) => {
   const { accountId } = context(req);
-  const issueKey = (req.context.extension as { issue?: { key?: string } } | undefined)?.issue?.key ?? '';
-  return { accountId, issueKey };
+  const extension = req.context.extension as { issue?: { key?: string }; content?: { id?: string | number } } | undefined;
+  const issueKey = extension?.issue?.key ?? '';
+  const rawPageId = extension?.content?.id;
+  const pageId = rawPageId === undefined || rawPageId === null ? '' : String(rawPageId);
+  return { accountId, issueKey, pageId };
+});
+
+/** Read-only: decision blocks on the current Confluence page and their registration state. */
+resolver.define('pageBlocks', async (req) => {
+  const { pageId } = req.payload as { pageId: string };
+  if (!/^\d{1,25}$/.test(pageId ?? '')) throw new Error('Invalid page id');
+  const page = await fetchPageText(pageId);
+  const repo = repoFor();
+  const blocks = [];
+  for (const block of page.blocks) {
+    const decision = await repo.getDecision(block.id);
+    blocks.push({
+      id: block.id,
+      status: block.status,
+      registered: Boolean(decision),
+      baselineVersion: decision?.baselineVersion ?? null,
+      preview: block.body.slice(0, 180),
+    });
+  }
+  return { pageId, version: page.version, blocks };
 });
 
 resolver.define('issueFindings', async (req) => {
   const { tenantId } = context(req);
   const { issueKey } = req.payload as { issueKey: string };
-  const repo = repoFor(tenantId);
+  const repo = repoFor();
   const decisions = await repo.listDecisions();
   const results: Finding[] = [];
   for (const decision of decisions) {
@@ -110,14 +142,14 @@ resolver.define('issueFindings', async (req) => {
 resolver.define('listFindings', async (req) => {
   const { tenantId } = context(req);
   const { blockId, issueKey } = req.payload as { blockId: string; issueKey?: string };
-  const findings = await repoFor(tenantId).listFindings(blockId);
+  const findings = await repoFor().listFindings(blockId);
   return issueKey ? findings.filter((f) => f.issueKey === issueKey) : findings;
 });
 
 resolver.define('dismissFinding', async (req) => {
   const { tenantId, accountId } = context(req);
   const { blockId, dedupe, reason } = req.payload as { blockId: string; dedupe: string; reason: string };
-  const repo = repoFor(tenantId);
+  const repo = repoFor();
   const finding = await repo.findFinding(dedupe, blockId);
   if (!finding) throw new Error('Unknown finding');
   await repo.putFinding({ ...finding, lifecycle: 'dismissed' });
@@ -141,7 +173,7 @@ resolver.define('dismissFinding', async (req) => {
 resolver.define('approveAndApply', async (req) => {
   const { tenantId, accountId } = context(req);
   const { proposalId } = req.payload as { proposalId: string };
-  const repo = repoFor(tenantId);
+  const repo = repoFor();
   const proposal = await repo.getProposal(proposalId);
   if (!proposal) throw new Error('Unknown proposal');
   const decision = await repo.getDecision(proposal.findingId.startsWith('block:') ? proposal.findingId.slice(6) : '');
@@ -219,7 +251,7 @@ export async function consumer(event: { body?: { tenantId?: string; pageId?: str
   if (!body.tenantId || !body.pageId || !body.blockId) return { skipped: true };
   const outcome = await analyzeBlock(
     {
-      repo: repoFor(body.tenantId),
+      repo: repoFor(),
       fetchPage: async (id) => {
         const page = await fetchPageText(id);
         return { version: page.version, text: page.text };

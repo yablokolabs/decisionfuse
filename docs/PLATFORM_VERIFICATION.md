@@ -37,7 +37,9 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Item | Command or request | Result |
 | --- | --- | --- |
 | CLI authentication | `forge whoami` with `FORGE_EMAIL`/`FORGE_API_TOKEN` | Logged in; keychain login had lapsed, token env auth works |
-| Deployment | `forge deploy -e development` | v2.0.0 deployed after fixing `noEmit` in `tsconfig.json` |
+| Deployment | `forge deploy -e development` | v2.0.0, then v2.1.0 with the Confluence page panel; first attempt failed on `noEmit` |
+| Byline module on a real page | page `426003` in browser | Renders as `DecisionFuse (Development)`, so the Confluence install resolves |
+| Panel storage partition | code review | Panel and MCP tools share the installation partition; a per-cloud-id partition would have hidden panel data from the tools |
 | Jira install | `forge install -p Jira -e development` | Complete, installation `e63b5663-a630-468b-883a-cfcaf946d437` |
 | Confluence install | `forge install -p Confluence -e development` | Complete, installation `ca73eaa3-ea71-4e76-a8e9-89cf74520fe2` |
 | Cross-product scopes | install output | Jira install explicitly required a separate Confluence install; no implied access |
