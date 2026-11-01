@@ -4,6 +4,7 @@ import { invoke } from '@forge/bridge';
 
 interface Finding {
   id: string;
+  blockId: string;
   issueKey: string;
   criterionId: string;
   classification: string;
@@ -11,6 +12,18 @@ interface Finding {
   rationale: string;
   sourceVersion: number;
   sourceSpan: { quote: string };
+  criterionSpan: { quote: string } | null;
+  dedupeKey: string;
+  lifecycle: string;
+}
+
+interface Proposal {
+  id: string;
+  operation: string;
+  criterionId: string;
+  exactText: string;
+  expiresAt: string;
+  issueKey: string;
 }
 
 interface Block {
@@ -65,8 +78,67 @@ const message = (text: string, kind: 'note' | 'error'): React.ReactElement => (
   </p>
 );
 
-function FindingCard({ finding, onDismiss }: { finding: Finding; onDismiss: (f: Finding) => void }) {
+function FindingCard({
+  finding,
+  onDismiss,
+  onChanged,
+}: {
+  finding: Finding;
+  onDismiss: (f: Finding) => void;
+  onChanged: () => Promise<void> | void;
+}) {
   const uncertain = finding.classification === 'insufficient-evidence';
+  const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [outcome, setOutcome] = useState<{ text: string; kind: 'note' | 'error' } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const propose = async () => {
+    setBusy(true);
+    setOutcome(null);
+    try {
+      const result = (await invoke('proposeForFinding', {
+        blockId: finding.blockId,
+        findingId: finding.id,
+      })) as { ok: boolean; reason?: string; proposal?: Proposal };
+      if (!result.ok || !result.proposal) {
+        setOutcome({ text: `No exact change to propose: ${result.reason ?? 'unknown reason'}.`, kind: 'error' });
+        return;
+      }
+      setProposal(result.proposal);
+    } catch (err) {
+      setOutcome({ text: err instanceof Error ? err.message : 'Proposal failed', kind: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const approve = async () => {
+    if (!proposal) return;
+    setBusy(true);
+    try {
+      const result = (await invoke('approveAndApply', { proposalId: proposal.id })) as {
+        status: string;
+        reason?: string;
+      };
+      setOutcome(
+        result.status === 'applied' || result.status === 'suggested'
+          ? {
+              text:
+                result.status === 'suggested'
+                  ? 'Recorded as a recommendation. No status transition was performed.'
+                  : 'Applied to the issue and recorded in the audit trail.',
+              kind: 'note',
+            }
+          : { text: `Approval rejected: ${result.reason ?? 'unknown reason'}. Nothing was written.`, kind: 'error' },
+      );
+      setProposal(null);
+      await onChanged();
+    } catch (err) {
+      setOutcome({ text: err instanceof Error ? err.message : 'Approval failed', kind: 'error' });
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
     <li
       style={{
@@ -103,15 +175,57 @@ function FindingCard({ finding, onDismiss }: { finding: Finding; onDismiss: (f: 
         <span>
           {finding.issueKey} · {finding.criterionId} · source v{finding.sourceVersion}
         </span>
-        <button onClick={() => onDismiss(finding)} style={{ ...button(false), marginLeft: 'auto' }}>
+        <button onClick={propose} disabled={busy} style={{ ...button(true), marginLeft: 'auto' }}>
+          Propose correction
+        </button>
+        <button onClick={() => onDismiss(finding)} disabled={busy} style={button(false)}>
           Dismiss with reason
         </button>
       </div>
+
+      {outcome && message(outcome.text, outcome.kind)}
+
+      {proposal && (
+        <div style={{ marginTop: 10, border: `1px solid ${navy}`, borderRadius: 6, padding: 12, background: '#fff' }}>
+          <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: faint, margin: 0 }}>
+            Proposed {proposal.operation} · {proposal.criterionId} · expires {proposal.expiresAt.slice(0, 16).replace('T', ' ')} UTC
+          </p>
+          <p
+            style={{
+              margin: '8px 0',
+              fontFamily: 'ui-monospace, monospace',
+              fontSize: 12,
+              color: '#1d2f42',
+              background: '#f7f5f0',
+              padding: '8px 10px',
+              borderRadius: 4,
+            }}
+          >
+            {proposal.exactText}
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button onClick={approve} disabled={busy} style={button(true)}>
+              Approve and apply
+            </button>
+            <span style={{ fontSize: 11, color: faint }}>
+              Single use. Rechecks your write permission, the source hash and the issue fingerprint first.
+            </span>
+          </div>
+        </div>
+      )}
     </li>
   );
 }
 
-function FindingsList({ findings, onDismiss }: { findings: Finding[] | null; onDismiss: (f: Finding) => void }) {
+function FindingsList({
+  findings,
+  onDismiss,
+  onChanged,
+}: {
+  findings: Finding[] | null;
+  onDismiss: (f: Finding) => void;
+  onChanged: () => Promise<void> | void;
+}) {
   if (findings === null) return <p style={{ fontSize: 13, color: faint }}>Checking linked decisions…</p>;
   if (findings.length === 0) {
     return <p style={{ fontSize: 13, color: faint }}>No drift found for the linked decisions at their current versions.</p>;
@@ -124,7 +238,7 @@ function FindingsList({ findings, onDismiss }: { findings: Finding[] | null; onD
       </p>
       <ul style={{ padding: 0, margin: 0 }}>
         {findings.map((f) => (
-          <FindingCard key={f.id} finding={f} onDismiss={onDismiss} />
+          <FindingCard key={f.id} finding={f} onDismiss={onDismiss} onChanged={onChanged} />
         ))}
       </ul>
     </>
@@ -191,8 +305,8 @@ function PageView({ pageId }: { pageId: string }) {
     await act(
       () =>
         invoke('dismissFinding', {
-          blockId: finding.criterionId.split(':')[0] ?? '',
-          dedupe: finding.criterionId,
+          blockId: finding.blockId,
+          dedupe: finding.dedupeKey,
           reason,
         }),
       'Finding dismissed with a reason recorded.',
@@ -309,7 +423,7 @@ function PageView({ pageId }: { pageId: string }) {
         </p>
       </div>
 
-      <FindingsList findings={findings} onDismiss={dismiss} />
+      <FindingsList findings={findings} onDismiss={dismiss} onChanged={() => loadFindings(selected)} />
     </section>
   );
 }
@@ -335,8 +449,8 @@ function IssueView() {
     const reason = window.prompt('Why is this finding not actionable?');
     if (!reason) return;
     await invoke('dismissFinding', {
-      blockId: finding.criterionId.split(':')[0] ?? '',
-      dedupe: finding.criterionId,
+      blockId: finding.blockId,
+      dedupe: finding.dedupeKey,
       reason,
     });
     await load();
@@ -345,7 +459,7 @@ function IssueView() {
   return (
     <section>
       {error && message(error, 'error')}
-      <FindingsList findings={findings} onDismiss={dismiss} />
+      <FindingsList findings={findings} onDismiss={dismiss} onChanged={load} />
     </section>
   );
 }

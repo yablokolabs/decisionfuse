@@ -12,18 +12,20 @@ Category: Apps for Software Teams (Atlassian Codegeist 2026).
 
 Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:
 
-- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.0.0.
+- Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v2.2.0.
 - Installed separately for **Jira** (`e63b5663-a630-468b-883a-cfcaf946d437`) and **Confluence** (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`). A Jira install does not grant Confluence access; both were required.
 - `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
-- `npx tsc --noEmit` clean; `npx vitest run` **40 tests passing** across five suites.
+- `npx tsc --noEmit` clean; `npx vitest run` **46 tests passing** across six suites, plus a gated live-site suite.
+- The engine, proposal builder and approval gate ran against live site content: a withdrawn accepted decision raised findings on two linked issues, left the unlinked control alone, produced exact proposal text, and rejected a stale approval without writing. See [`evidence/2026-11-01-live-engine.md`](evidence/2026-11-01-live-engine.md).
 - Deterministic domain: block extraction, formatting-insensitive hashing, span diffing, classification, evidence validation, proposal-bound approval, single-use approvals, tenant partitioning, replay-safe findings, reconcile-before-retry.
+- Deterministic proposals: the criterion sentence sharing the decision's subject is replaced and the rest is preserved; no shared subject means no proposal rather than a guess.
 - Read-only tool layer shared by the Rovo agent and the MCP server, with input allow-lists and fail-closed permission checks.
 
 Synthetic scenario seeded on that site: project `DFS` with `DFS-1`/`DFS-2` and the unaffected control `DFS-3`, plus Confluence page `426003` holding an accepted `checkout-guest` decision block. See [`evidence/2026-11-01-site-install.md`](evidence/2026-11-01-site-install.md).
 
 Not yet verified — do not assume it works:
 
-- The review loop has not been run on the site. Register, link, rescan and approve are resolver calls reached only from the Jira issue panel in a signed-in browser session, which this build environment does not have. Nothing has been written to Jira or Confluence by the app.
+- The review loop has not run through the Forge runtime. Register, link, rescan, propose and approve are resolver calls reached only from the panel in a signed-in browser session, which this build environment does not have. The domain has run against live content over REST, but nothing has been written to Jira or Confluence by the app itself.
 - The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure. Bonus eligibility is not claimed.
 - No reviewer-without-write-permission or denied-source-access accounts exist on the site. Those paths are covered only by mocked tests.
 - Teamwork Graph is not used. No Marketplace listing exists.
@@ -73,6 +75,9 @@ npm run typecheck
 npm test
 forge lint
 (cd static/hello-world && npm install && npm run build)
+
+# Real-site domain check; needs FORGE_EMAIL and FORGE_API_TOKEN in the environment
+DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts
 ```
 
 ## Project layout

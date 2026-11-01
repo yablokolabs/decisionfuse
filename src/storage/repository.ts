@@ -24,6 +24,12 @@ export class Repository {
   async putDecision(decision: Decision): Promise<void> {
     assertTenant(decision.tenantId, this.tenantId);
     await this.kv.set(this.key('decision', decision.blockId), decision);
+    // The list is what the issue panel and the approval path scan; a decision
+    // that only exists under its own key is invisible to both.
+    const decisions = await this.listDecisions();
+    const next = decisions.filter((d) => d.blockId !== decision.blockId);
+    next.push(decision);
+    await this.kv.set(this.key('decisions'), next);
   }
 
   async getDecision(blockId: string): Promise<Decision | null> {

@@ -37,7 +37,7 @@ export async function applyApprovedProposal(
   const approvalInput = {
     proposal,
     approverAccountId: input.approverAccountId,
-    currentSourceHash: await deps.fetchSourceHash(proposal.tenantId),
+    currentSourceHash: await deps.fetchSourceHash(finding.blockId),
     currentIssueFingerprint: await deps.fetchIssueFingerprint(proposal.issueKey),
     canWriteIssue: await deps.canEditIssue(proposal.issueKey),
     now: deps.now(),

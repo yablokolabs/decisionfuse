@@ -47,8 +47,12 @@ Judge sharing: inspect current Forge sharing/distribution requirements, producti
 | Project creation shape | `POST /rest/api/3/project` vs `/rest/api/2/project` | v3 with `projectTemplateModuleKey` → 400; v2 with `projectTemplateKey` → 201 |
 | Block extraction input | page `426003` storage body | `BEGIN DECISION checkout-guest status=accepted` present and normalized |
 | Review loop | panel resolver | **Not invoked** — needs a signed-in browser session |
+| Engine on live content | `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` | Passed 4.1s: page `426019` seeded, withdrawn at v2, findings on `DFS-1`/`DFS-2`, none on unlinked `DFS-3`, proposal text exact, v3 approval rejected `stale-source` with `writes: 0` |
+| Forge runtime path | resolver calls as the signed-in user | **Unverified.** The live check uses the owner's API token, not `asUser()`, so platform permission delegation and Forge storage are untested |
+| Proposal and approval gate | `src/domain/propose.ts`, `src/review/apply.ts` | Reachable from the panel, exercised on live data over REST; not yet through the runtime |
+| MCP tool enablement | Atlassian Administration | **Blocked**: `rovo:mcp` is preview and each tool must be enabled per installation by a site or org admin. No admin session on this host |
 | Rovo agent | `rovo:agent` | **Not invoked**, no conversation recorded |
 | MCP tools | `rovo:mcp` | **Not invoked**; exposure disabled until a site admin enables each tool |
 | Teamwork Graph | — | Not tested, not used. Jira/Confluence links are not TWG evidence |
 
-Consequences for claims: deployment and installation are **verified**. The review loop, Rovo agent and MCP tools are **installed but never invoked**. No bonus eligibility is claimed until a real invocation and an admin enablement are recorded here with redacted output.
+Consequences for claims: deployment and installation are **verified**. The domain, proposal builder and approval gate are **verified against live content over REST**. Invocation through the Forge runtime, the Rovo agent and the MCP tools remain **installed but never invoked**. No bonus eligibility is claimed until a real invocation and an admin enablement are recorded here with redacted output.

@@ -1,5 +1,6 @@
 import Resolver from '@forge/resolver';
 import { getProposal, inspectDecisionChange, listAffectedWork, INSTALLATION_SCOPE } from './actions/tools';
+import { buildProposal } from './domain/propose';
 import { extractDecisionBlocks, hashText, normalizeText } from './domain/text';
 import type { Finding, Proposal } from './domain/types';
 import { analyzeBlock, decisionForRegistration } from './queue/engine';
@@ -170,17 +171,65 @@ resolver.define('dismissFinding', async (req) => {
   return { dismissed: true };
 });
 
+/** Findings are stored per decision block; the proposal only knows the finding id. */
+async function locateFinding(repo: Repository, findingId: string) {
+  for (const decision of await repo.listDecisions()) {
+    const finding = (await repo.listFindings(decision.blockId)).find((f) => f.id === findingId);
+    if (finding) return { decision, finding };
+  }
+  return null;
+}
+
+resolver.define('proposeForFinding', async (req) => {
+  const { blockId, findingId } = req.payload as { blockId: string; findingId: string };
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(blockId ?? '')) throw new Error('Invalid decision block id');
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(findingId ?? '')) throw new Error('Invalid finding id');
+  const repo = repoFor();
+  const decision = await repo.getDecision(blockId);
+  if (!decision) throw new Error('Unknown registered decision');
+  const finding = (await repo.listFindings(blockId)).find((f) => f.id === findingId);
+  if (!finding) throw new Error('Unknown finding');
+
+  // A proposal is only honest against the source and issue it was found on.
+  const page = await fetchPageText(decision.pageId);
+  const block = page.blocks.find((b) => b.id === blockId);
+  if (!block) throw new Error('Source decision block is missing');
+  if (hashText(normalizeText(block.body)) !== finding.sourceHash) {
+    throw new Error('Source changed since this finding was produced; rescan first');
+  }
+  const issue = await fetchIssueSnapshot(finding.issueKey);
+  if (issue.fingerprint !== finding.issueFingerprint) {
+    throw new Error('Issue changed since this finding was produced; rescan first');
+  }
+  const criterion = issue.criteria.find((c) => c.id === finding.criterionId) ?? null;
+
+  const built = buildProposal({
+    finding,
+    decision,
+    criterionText: criterion?.text ?? null,
+    now: new Date().toISOString(),
+    id: newId(),
+  });
+  if (!built.ok) return { ok: false, reason: built.reason };
+  await repo.putProposal(built.proposal);
+  return { ok: true, proposal: built.proposal, criterionText: criterion?.text ?? null };
+});
+
+resolver.define('listAudit', async () => {
+  const log = await repoFor().listAudit();
+  return log.slice(-25).reverse();
+});
+
 resolver.define('approveAndApply', async (req) => {
-  const { tenantId, accountId } = context(req);
+  const { accountId } = context(req);
   const { proposalId } = req.payload as { proposalId: string };
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(proposalId ?? '')) throw new Error('Invalid proposal id');
   const repo = repoFor();
   const proposal = await repo.getProposal(proposalId);
   if (!proposal) throw new Error('Unknown proposal');
-  const decision = await repo.getDecision(proposal.findingId.startsWith('block:') ? proposal.findingId.slice(6) : '');
-  if (!decision) throw new Error('Unknown decision for proposal');
-  const findings = await repo.listFindings(decision.blockId);
-  const finding = findings.find((f) => f.id === proposal.findingId);
-  if (!finding) throw new Error('Unknown finding for proposal');
+  const located = await locateFinding(repo, proposal.findingId);
+  if (!located) throw new Error('Unknown finding for proposal');
+  const { decision, finding } = located;
 
   const outcome = await applyApprovedProposal(
     {
@@ -197,8 +246,7 @@ resolver.define('approveAndApply', async (req) => {
       postComment,
       now: () => new Date().toISOString(),
       newId,
-    },
-    { finding: finding as Finding, proposal: proposal as Proposal, approverAccountId: accountId },
+    },      { finding, proposal, approverAccountId: accountId },
   );
   return outcome;
 });

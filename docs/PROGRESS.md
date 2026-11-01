@@ -1,6 +1,20 @@
 # Progress
-Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2). Site seeded with synthetic data. Review-loop invocation, Rovo agent call and MCP call still unproven — they need a signed-in browser session.
+Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v2.2.0). Engine, proposal and approval gate have run against live site content; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
+
+## Checkpoint — 2026-11-01 ~19:25 UTC / working tree after `d38ab63` / milestone M5 (proposal + approval reachable, live engine proof)
+Changed:
+- `src/domain/propose.ts` (new): deterministic proposal builder. Replaces only the criterion sentence that shares the decision's subject, preserves the rest, refuses when no subject is shared, when the finding is stale, or when the change leaves the text identical. No model involved.
+- `src/index.ts`: new `proposeForFinding` resolver (re-reads source and issue, refuses to propose against drift) and `listAudit`; `approveAndApply` now resolves the finding across decision blocks instead of a non-existent `block:` prefix, so the approval path is reachable at all.
+- `src/storage/repository.ts`: `putDecision` now maintains the decision list; without it the issue panel and the approval lookup saw an empty list.
+- `src/domain/issue-text.ts` (new): ADF and criterion parsing split out of the platform adapter so it runs off-platform; `src/services/jira.ts` re-exports it.
+- `static/hello-world/src/index.tsx`: each finding now has Propose correction → exact text, expiry and single-use Approve and apply; dismissal uses the finding's real block id and dedupe key (both were read from the wrong fields, so dismiss was broken).
+- `tests/propose.test.ts` (6 tests) and `tests/live-site.test.ts` (gated real-site suite).
+Checks actually run: `npx tsc --noEmit` → 0; `npx vitest run` → 6 files / 46 tests; `DECISIONFUSE_LIVE=1 npx vitest run tests/live-site.test.ts` → 1 passed (4.1s) against `yablo.atlassian.net`; `forge lint` → No issues found; UI bundle 242.2kb; `forge deploy -e development` → `✔ Deployed` 2.2.0.
+Live-site result: new page seeded, decision withdrawn at v2, findings raised for `DFS-1` (obsolete-scope, high) and `DFS-2` (obsolete-scope, medium), none for the unlinked `DFS-3`; proposal `Out of scope: Guest checkout is no longer enabled for first-time buyers.`; page moved to v3 → approval rejected `stale-source`, `writes: 0`, audit row `approval-rejected`, no `decisionfuse-proposal` comment on `DFS-1`.
+Known limitation from that run: `DFS-2` is a false positive (its session-expiry criterion is untouched by the withdrawal). The classifier has no notion of "criterion subject untouched"; the reviewer dismisses it, but it is noise a stricter rule should remove.
+Capability status: domain, proposal and approval gate — verified against live content over REST. Forge-runtime resolvers, Rovo agent and MCP — still never invoked.
+Next executable action: owner opens the DecisionFuse byline panel on page `426003`, registers `checkout-guest`, links `DFS-1`/`ac-1` and `DFS-3`/`ac-1`, edits the block to "no longer enabled" and rescans, then proposes and approves in the panel.
 
 ## Checkpoint — 2026-11-01 ~18:40 UTC / working tree after `e6d63b0` / milestone M3 (page panel)
 Changed:
