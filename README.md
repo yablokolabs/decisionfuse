@@ -39,7 +39,7 @@ Not yet verified — do not assume it works:
 - The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure: the app endpoint returns 404 while the MCP server's own OAuth metadata returns 200. Bonus eligibility is not claimed.
 - A browser-free runtime hook was attempted and failed: a token-gated web trigger needed a major-version approval, dropped Runs on Atlassian eligibility, then returned `424` on every call without reaching the handler. It was reverted and eligibility restored. See [`evidence/2026-11-01-runtime-proof-attempt.md`](evidence/2026-11-01-runtime-proof-attempt.md).
 - No reviewer-without-write-permission or denied-source-access accounts exist on the site. Those paths are covered only by mocked tests. [`scripts/fixture-permissions.mjs`](scripts/fixture-permissions.mjs) records both once a second identity exists and exits 3 naming the requirement until then.
-- The production build has never been installed anywhere, so a judge following the install link would be the first to exercise it.
+- The production build has never been installed anywhere, so a judge following the install link would be the first to exercise it. Distribution is set to **Sharing with anyone** (2026-11-02), which is the status that permits an install from outside the owner's organization; the install itself is still untried. See [`evidence/2026-11-02-distribution-status.md`](evidence/2026-11-02-distribution-status.md).
 - Teamwork Graph is not used. No Marketplace listing exists; the Marketplace bonus is not claimed.
 
 ## Architecture

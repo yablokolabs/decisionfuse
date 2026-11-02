@@ -2,6 +2,15 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-02 / working tree after `9ab1600` / milestone M16 (distribution confirmed, two disclosure gaps)
+Changed:
+- `evidence/2026-11-02-distribution-status.md` (new) records the console Distribution page as reported by the owner: status **Sharing with anyone**, app owner, Yabloko Labs Ltd., support and privacy URLs, **Terms of Service empty**, "Stores personal data?" **No**.
+- README and `docs/PLATFORM_VERIFICATION.md` now cite that status instead of leaving the installation question open. `docs/SUBMISSION_CHECKLIST.md` says the Access requirement is met at settings level and names the two disclosure gaps.
+Owner-reported, not independently verified: the console page itself is behind a signed-in session this host does not have.
+Checks actually run: nothing to run — the console values cannot be probed anonymously. The cross-check that did run was a code read: the app persists `Decision.ownerAccountId`, `Approval.approvedBy` and `AuditRecord.actor`, which contradicts a "Stores personal data? No" answer unless the owner has decided account ids are out of scope.
+Open: an outsider install is still untried (optional now), Terms of Service is empty, and the personal-data answer needs either a correction or a written basis. None of these block judging.
+Next executable action: decide the personal-data answer, and add a terms page if wanted.
+
 ## Checkpoint — 2026-11-02 / working tree after `00d5bea` / milestone M15 (submitted; only the Access risk left)
 Changed:
 - `docs/SUBMISSION_CHECKLIST.md` gains a **Submission status** section: owner reports Devpost submitted 2026-11-02 with the installation link, the public 2:23 YouTube demo and the technology explanation; bonus boxes left unticked; edits remain possible until Dec 22.

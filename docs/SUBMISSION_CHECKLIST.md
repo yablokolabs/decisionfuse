@@ -7,10 +7,15 @@ link, the public YouTube demo and the technology explanation. Bonus boxes were l
 unticked (Rovo, MCP, Teamwork Graph, Marketplace) because none of those capabilities has a
 recorded invocation or listing.
 
-What remains is not a submission task, it is a risk check: **confirm the installation link
-works for someone outside the owner's organization**, because that is the Access
-requirement and it is the only thing judges will hit first. See
-`docs/PANEL_AND_MCP_RUNBOOK.md` Part 0. Devpost normally allows edits until the deadline
+Distribution was confirmed on 2026-11-02 as **Sharing with anyone**, the only status that
+lets a judge outside the owner's organization install, so the Access requirement is met at
+the settings level. An actual outsider install is still untried — optional confirmation in
+`docs/PANEL_AND_MCP_RUNBOOK.md` Part 0.
+
+Two disclosure gaps remain in the console listing: **Terms of Service is empty**, and
+"Stores personal data?" is answered **No** while the app persists Atlassian account ids in
+`Decision.ownerAccountId`, `Approval.approvedBy` and `AuditRecord.actor`. See
+`evidence/2026-11-02-distribution-status.md`. Devpost normally allows edits until the deadline
 (Dec 22, 2026), so bonuses remain addable later if an invocation is ever recorded.
 Grounding: user's attached brief, archived in COMPETITION_BRIEF.txt. Check live rules again before submission.
 - Main requirement: real Forge app integrating at least one eligible Atlassian product. Selected category Software Teams.
