@@ -50,3 +50,67 @@ problem. Registering a Confluence decision, comparing it over time, and correcti
 criterion needs both products' data in one runtime, with the user's own permissions
 applied at the moment of writing. Forge supplies that identity, that storage and that
 audit path without hosting anything.
+
+## Experience building with Forge
+
+### What worked well
+
+- **The manifest is a real contract, and `forge lint` enforces it.** A malformed
+  `consumer` module was caught before deploy instead of at runtime. That feedback loop is
+  fast enough to shape design.
+- **The resolver boundary made the safety rule structural.** Custom UI can only call
+  `invoke()`; identity arrives in `req.context`, never in the payload. "A model may
+  propose, only a permitted human approves a write" became one narrow path instead of a
+  convention people have to remember.
+- **`@forge/kvs` is installation-scoped, so tenant isolation was free** — no tenant
+  parameter to validate, no tenant column to leak. I deleted a per-cloud-id partition I
+  had written first, because it was strictly worse than the platform's own boundary.
+- **The queue consumer made replay safety cheap.** One dedupe key per finding and a
+  replayed message writes nothing new.
+- **Runs on Atlassian turns "stays inside Atlassian" into a testable claim.** `forge
+  eligibility` returns a yes or no instead of a promise.
+
+### What I struggled with
+
+1. **No way to invoke a resolver without a browser.** This is the biggest gap. Register,
+   link, rescan, propose and approve are all resolver calls reachable only from the panel.
+   I tried a token-gated `webtrigger` as a browser-free hook: deploying it required
+   `--approve MAJOR_VERSION_RULE`, that dropped Runs on Atlassian eligibility, and every
+   call then returned `424` without reaching the handler. I reverted it. The review loop
+   is covered by tests and by a REST harness, but it has never run on the platform.
+2. **Important controls are UI-only.** MCP exposure is an admin toggle with no API, and
+   `https://mcp.atlassian.com/forge/<appId>` returns the same `404` whether the app is
+   broken or simply not exposed. Those are different problems; I could only tell them
+   apart by probing the server's OAuth metadata.
+3. **Version numbers are per environment.** The same code sat at `3.1.0` in development
+   and `2.0.0` in production. Correct, but it reads like two different builds in a demo.
+4. **A silent build failure.** With `noEmit: true` in `tsconfig.json`, Forge's ts-loader
+   emitted nothing and the deploy failed with no useful message. Cost an hour.
+5. **Storage partition semantics were ambiguous in practice.** The panel wrote to one
+   partition while the action handlers read another: the data existed and was invisible.
+   Nothing was wrong except my reading, which is exactly the kind of bug that is invisible
+   until you trace both paths.
+6. **Distribution and Marketplace conflict late.** Registering for Marketplace listing
+   voids the installation link — a real constraint, but I found it while filling a form,
+   not while planning distribution.
+
+### What I'd improve
+
+1. **A supported way to invoke resolver functions as a chosen identity after install**,
+   so panel logic can run in CI. A `forge invoke` for post-install resolvers would have
+   changed this build more than any other single feature.
+2. **APIs for distribution and MCP enablement**, returning explicit state — "exposed,
+   enabled, zero tools" — instead of a bare `404`.
+3. **Warn before deploy when a change drops Runs on Atlassian eligibility**, in lint,
+   rather than after the deploy has already happened.
+4. **Fail loudly when ts-loader emits nothing.** One sentence in the error output would
+   have saved the hour I spent on it.
+5. **State storage partitioning in one sentence, with the panel-versus-action example.**
+   It is the most consequential platform detail I got wrong.
+6. **Surface the installation-link/Marketplace-listing exclusivity when a listing is
+   created**, not in a distribution document read days later.
+
+None of this changes my answer to "would you use Forge again": yes. The constraints that
+caused friction — permissions, isolation, no hosting, no arbitrary egress — are the same
+constraints that make the app auditable. I would just like the review loop to be testable
+without a browser.
