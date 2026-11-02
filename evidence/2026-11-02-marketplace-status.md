@@ -28,7 +28,7 @@ trades the primary judge path for a bonus field.
 The documented way to have both is to duplicate the app into a second, unlicensed app and
 share that one. That is not a rename: a new app id means a fresh install on the
 development site, a fresh deployment, and re-verifying everything the current evidence
-rests on. It is not worth doing days from submission for a bonus.
+rests on. With the deadline on Dec 22, 2026 there is time to do it properly, but it is still a second app with its own installs and its own unverified evidence, so the bonus is not worth starting before the primary install link has been tested by a non-contributor.
 
 ## What a listing would actually take
 
