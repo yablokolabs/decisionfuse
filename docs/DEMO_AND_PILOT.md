@@ -12,6 +12,8 @@ Pilot: one consenting engineering team, one project and 5-10 registered accepted
 
 ## Recording the panel run (needs a signed-in browser)
 
+Full sequence with the expected strings, failure codes and evidence templates: [`PANEL_AND_MCP_RUNBOOK.md`](PANEL_AND_MCP_RUNBOOK.md). The short version follows.
+
 This is the one gap the build host cannot close. Follow it in order on `yablo.atlassian.net`
 and save what you see; the app writes only a comment, so nothing is closed or transitioned.
 
