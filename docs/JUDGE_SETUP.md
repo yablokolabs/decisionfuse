@@ -4,6 +4,22 @@ Ten minutes end to end. You need a site with **both Jira and Confluence** and ad
 rights on it. Nothing here uses an existing customer site, and every object you create
 is disposable.
 
+## Credentials and configuration — none
+
+There are **no credentials, API keys, tokens, environment variables, webhooks or
+external services** to supply. The app runs entirely inside Forge on your own site and
+acts as the signed-in reviewer. There is no model provider, no outbound server, no
+database to create and no admin toggle to enable for the flow described here.
+
+Configuration is two steps, both of which are just installation:
+
+1. Install the app for **Jira**.
+2. Install the app for **Confluence**.
+
+The only thing a judge has to author is test content: one Confluence page and two Jira
+issues, both described below. If a step here is skipped, the section that breaks says
+so.
+
 Installation link (installs the production build, Jira and Confluence):
 
 ```
@@ -37,26 +53,41 @@ register, so the review loop cannot be exercised.
    END DECISION
    ```
 
-3. Publish. Open the **DecisionFuse** byline item in the page's toolbar area.
+   Put **each of the three lines in its own paragraph** — press Enter after each line. A
+   soft break (Shift+Enter) keeps them in one paragraph, and the block will not be found.
+3. Publish. Open the **DecisionFuse** item that appears in the page's byline area under
+   the title. If it is not visible, look in the **…** (more actions) menu next to the
+   page title — Confluence places content-byline items there when the header is tight.
 4. Press **Register**. The block should move from `not registered` to `baseline v1`.
    The baseline is the page version at that moment, and it is immutable.
+
+An `accepted` status is what makes a block actionable; `draft` and `superseded` blocks
+appear in the panel and can be registered, but a finding is never raised for one.
 
 ## 3. Create linked work (Jira)
 
 1. Create a project (any software template) with key `DFS`, or reuse one.
-2. Create two issues, each with an acceptance-criterion list in the description:
-   - `Guest checkout for first-time buyers` with criterion
+2. Create two issues and give each a description of **exactly one line**:
+   - `Guest checkout for first-time buyers` →
      `Guest checkout is enabled for first-time buyers.`
-   - `Guest cart session expiry` with criterion
+   - `Guest cart session expiry` →
      `Guest cart sessions expire after 60 minutes.`
-3. The app links to criteria as `ac-1`, `ac-2`, … in order of appearance. `ac-1` is
-   the first criterion on the issue.
+3. How criteria are read, precisely: **every non-empty line of the description is one
+   criterion**, numbered `ac-1`, `ac-2`, … in order, with leading bullets or numbers
+   stripped. So a one-line description has only `ac-1`. If you add explanatory prose on
+   a second line, that prose becomes `ac-2` and the numbering shifts — keep the
+   description to the criterion alone, which is how the real workflow uses it.
+4. Optional control: create a third issue `Order confirmation tax summary` with the line
+   `Order confirmation shows the tax summary.` and **never link it**. It must stay
+   silent, which is what proves links are explicit rather than guessed.
 
 ## 4. Link, change, rescan
 
-1. Back on the Confluence page, in **Link one issue criterion**, link the checkout
-   decision block to `DFS-1` / `ac-1`, then to `DFS-2` / `ac-2` (the cart-session
-   criterion is `ac-1` on its own issue).
+1. Back on the Confluence page, in **Link one issue criterion**: select block
+   `checkout-guest`, enter `DFS-1`, `ac-1`, press **Link**. Then link `DFS-2` / `ac-1`
+   the same way. Each issue has one criterion, so both are `ac-1`.
+   The Link button stays disabled until the block, a key matching `DFS-1` and a criterion
+   matching `ac-1` are all valid — that is a check, not a bug.
 2. Edit the page body: change the first sentence to
    `Guest checkout is no longer enabled for first-time buyers.` and publish. Only that
    sentence — leaving the second one intact is what makes the unaffected case visible.
@@ -96,7 +127,25 @@ register, so the review loop cannot be exercised.
   user denied access to the source page) is covered by tests, not by a second account on
   a judge's site.
 
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| No `DecisionFuse` item on the page | Confluence install missing, or the item is collapsed into **…** | Install for Confluence from the link, reload, check the more-actions menu |
+| Panel says `No fenced decision block on this page.` | The three fence lines are in one paragraph, or the page was not published | Put each line in its own paragraph with Enter, publish |
+| Rescan reports zero findings | The page was edited before registering, so the edit became the baseline | Edit the sentence to something new, publish, rescan |
+| Rescan reports the wrong issue | Link points at the wrong criterion number | Unlink by relinking: link the correct `issueKey`/`ac-n` pair again |
+| `Approve and apply` says `stale-source` on the first attempt | The page changed after the proposal was built | Rescan, then propose again |
+| No comment appears on the issue | The proposal was an `amend-criterion` recommendation that was never applied, or the issue already carries the marker | Check the audit rows in the panel; a second apply reconciles rather than duplicating |
+
 ## Reset
 
 Delete the page and the two issues. The app stores baselines per installation; a fresh
 install starts empty, and nothing is shared between sites.
+
+## What has not been demonstrated in this setup
+
+No judge has run this yet, and neither has the owner inside a browser: the panel path is
+written and deployed but the Forge-runtime invocation is unrecorded. If a step above
+does not behave as described, that is the first real failure report on this build —
+worth noting in a submission comment rather than working around it silently.
