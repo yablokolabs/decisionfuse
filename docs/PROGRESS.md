@@ -2,6 +2,14 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-02 / working tree after `204b374` / milestone M14 (judge instructions audited, Marketplace deliberately not claimed)
+Changed:
+- `docs/JUDGE_SETUP.md`: states **credentials = none** (no keys, tokens, env vars, webhooks or external services; installing for Jira and Confluence is the whole configuration), fixes `DFS-2` to `ac-1`, states that `extractCriteria` treats every non-empty description line as a criterion, requires the three fence lines in separate paragraphs, and adds a troubleshooting table.
+- `evidence/2026-11-02-marketplace-status.md` (new) and `docs/SUBMISSION_CHECKLIST.md`: the Marketplace bonus is **not claimed** — no listing, no review ticket. The distribution page (Oct 30 2026) says an app submitted for Marketplace listing "can't be shared via installation link", so submitting before judging would break the link the review team uses.
+Checks actually run: `npx tsx` against the real parsers — one-line description → `[ac-1]`; two-line → `[ac-1, ac-2]`; the fenced block parses to `checkout-guest accepted`; the same block collapsed to one line via a soft break → `[]`. `grep` confirmed the corrected rules are in the shipped doc.
+Open: the panel path is still unrun in a browser, and the Marketplace bonus stays empty by choice, not by oversight.
+Next executable action: unchanged — Devpost link field takes the installation link, instructions field takes `docs/JUDGE_SETUP.md`; leave the Marketplace field blank.
+
 ## Checkpoint — 2026-11-02 / working tree after `61d8262` / milestone M13 (production build deployed for judge distribution)
 Changed:
 - `forge deploy -e production --non-interactive` → **✔ Deployed 2.0.0**, lint clean, **eligible for Runs on Atlassian**. Production is the environment an installation link installs, so this was the prerequisite for the Devpost URL field.
