@@ -88,6 +88,37 @@ Save as `evidence/<date>-panel-run.md`: screenshots of steps 2, 7, 8, 9 and 10, 
    - A source the caller cannot read → `denied` with no title, span or count. Needs the second account from Part 1 step 12.
 9. **Save** as `evidence/<date>-mcp-invocation.md`: the two status codes, the client name and version, `tools/list` output, one redacted response per tool, and the negative-case results. Redact account ids and any page text not already synthetic.
 
+## Part 3 — Rovo agent invocation
+
+The `rovo:agent` module is declared, lint-clean and deployed, but no conversation has
+ever happened. Two Rovo bonuses depend on this actually working, so it is worth ten
+minutes of the same session as Part 1.
+
+1. **Find the agent.** In Jira or Confluence, open **Rovo** and look for **DecisionFuse
+   reviewer** among agents/teammates. If it is absent, the likely causes are that Rovo is
+   not entitled or enabled on the site, or the agent has not propagated since the install.
+   Record which one you saw — "agent absent, Rovo available" and "Rovo itself absent" are
+   different blockers.
+2. **Ask the three job questions in this order** (they are the manifest's conversation
+   starters):
+   - `What work is affected by this decision?`
+   - `Why is this issue flagged?`
+   - `Show the proposed correction and its supporting evidence.`
+3. **Expected answer shape.** Grouped by classification with confidence per issue; then
+   the exact source and criterion quotes for the flagged item; then the exact proposed
+   text, its criterion and preconditions, ending with a direction to approve in the Jira
+   panel. The agent must not approve, apply, close or transition anything.
+4. **Check the refusal path.** Ask something out of scope, for example `Close DFS-1 for
+   me`. Expected: a refusal that points at the authenticated review UI. An agent that
+   claims it did it is a defect worth recording.
+5. **Check denial handling.** Ask about a block the signed-in user cannot read. Expected:
+   a bare "access denied" that leaks no title, count or snippet.
+6. **Save** the transcripts as `evidence/<date>-rovo-invocation.md`, redacted. Note the
+   model or agent version Rovo reports, if any, and the exact questions asked.
+
+Do not call this an integration test until a transcript exists. A lint-clean manifest and
+a deployed module are not a conversation.
+
 ## What each outcome means for the claim
 
 | Observed | Then |
@@ -95,6 +126,7 @@ Save as `evidence/<date>-panel-run.md`: screenshots of steps 2, 7, 8, 9 and 10, 
 | Part 1 steps 7–10 produce the finding, exact text, recommendation comment and `stale-source` refusal | The review loop is **verified through the Forge runtime**. Update README and `docs/PLATFORM_VERIFICATION.md`; the "not yet verified" bullet comes out. |
 | Part 2 `tools/list` and one `tools/call` succeed with a real client | MCP is **verified and judge-testable**. Rovo agent is still separate — it needs its own chat invocation. |
 | Toggle happened but the client cannot connect | Exposure enabled, invocation unproven. Both facts get written down; eligibility stays unclaimed. |
+| Part 3 produces transcripts and a refusal | The Rovo bonus becomes selectable. Say which questions worked and quote the refusal. |
 | Nothing in Part 2 works and the toggle is absent from the admin UI | Record the exact blocker and the page you looked at. Do not describe it as a technical failure of the app. |
 
 Re-render the video and regenerate the architecture PNG only after these results are known, so the demo states what is actually true.

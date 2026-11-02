@@ -38,6 +38,20 @@ licensing model, and then Atlassian's review. None of that exists in this reposi
 and none of it can be manufactured from this host. Marketplace eligibility requires the
 real listing or the real submitted review ticket, never a draft screenshot.
 
+## Independent check, 2026-11-02
+
+The owner's account was not trusted to answer this one. Atlassian's public Marketplace API
+was queried directly:
+
+| Query | Result |
+| --- | --- |
+| `GET marketplace.atlassian.com/rest/2/addons?text=DecisionFuse&limit=10` | **200**, `matches 0` |
+| `GET marketplace.atlassian.com/rest/2/addons?text=yablokolabs&limit=10` | **200**, `matches 0` |
+
+Both searches are empty, so there is no listing under the app name or the vendor name.
+A Marketplace URL therefore cannot be produced honestly, and neither can a review-ticket
+link, because nothing was ever submitted.
+
 ## Recommendation
 
 1. Leave the Marketplace bonus field empty. Do not describe a listing that does not exist.
