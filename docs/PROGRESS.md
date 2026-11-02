@@ -2,6 +2,16 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-02 / working tree after `61d8262` / milestone M13 (production build deployed for judge distribution)
+Changed:
+- `forge deploy -e production --non-interactive` → **✔ Deployed 2.0.0**, lint clean, **eligible for Runs on Atlassian**. Production is the environment an installation link installs, so this was the prerequisite for the Devpost URL field.
+- `docs/JUDGE_SETUP.md` (new): judge-facing setup — install on Jira **and** Confluence, create the fenced block, link criteria, rescan, propose, approve, then the stale refusal. States what is deliberately not enabled (no auto-close, no model writes, Rovo/MCP not part of judge testing).
+- `docs/PLATFORM_VERIFICATION.md`: new distribution section. `forge install --help` on 15.0.0 has **no** sharing flag; the Oct 30 2026 reference makes sharing a developer-console action with **no documented API**; distribution is currently **Not sharing**, so judges cannot install until a human flips it to **Sharing** and selects both products.
+- `evidence/2026-11-02-production-deploy.md` records the deploy, the console URL the CLI printed, and the multi-product constraint.
+Checks actually run: `forge whoami` with token env auth → logged in; `forge deploy -e production` → Deployed 2.0.0, RoA eligible; `forge install --help` → no sharing option; distribution docs re-read on 2026-11-02.
+Open: the installation link cannot be generated from this host. A console admin must set Distribution → **Sharing**, select **Jira + Confluence**, save, and copy the link.
+Next executable action: generate the installation link in the console, then paste it into the Devpost field and attach the `docs/JUDGE_SETUP.md` steps.
+
 ## Checkpoint — 2026-11-02 / working tree after `aa47881` / milestone M12 (demo on Vimeo, runbook for the two unproven paths)
 Changed:
 - README `## Demo` links **YouTube** `https://www.youtube.com/watch?v=nLg7tp5BkcY`, the platform the competition asks for; the Vimeo copy (`vimeo.com/1242318404`, 143 s) and the MP4 release asset stay as backups. `evidence/2026-11-02-demo-publishing.md` records each check and states that YouTube's oEmbed reports no duration, so the cap rests on `ffprobe` 143.3 s plus Vimeo's `duration: 143`.

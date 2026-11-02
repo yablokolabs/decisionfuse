@@ -16,6 +16,21 @@ Rovo bonus requires a working eligible module and real agent/tool demonstration.
 
 Judge sharing: inspect current Forge sharing/distribution requirements, production environment install flow, licensing/account constraints, and eligibility of multi-product installation. Rehearse with another authorized site/account. Marketplace eligibility requires actual listing or submitted review ticket, never a draft screenshot. Public posting and submission remain user actions unless explicitly authorized.
 
+## Distribution and judge sharing, 2026-11-02
+
+Source for the sharing flow: https://developer.atlassian.com/platform/forge/distribute-your-apps/, last updated **Oct 30, 2026**. Full record in `evidence/2026-11-02-production-deploy.md`.
+
+| Item | Command or source | Result |
+| --- | --- | --- |
+| CLI sharing flag | `forge install --help` on 15.0.0 | **None.** No `--share`, `--distribution` or link generation |
+| Production deploy | `forge deploy -e production --non-interactive` | **✔ Deployed** version **2.0.0**, lint clean, **eligible for Runs on Atlassian** |
+| Distribution status | developer console, Distribution page | **Not sharing** — contributors only. Judges outside the owner's org cannot install yet |
+| Enabling sharing | documented flow | Developer console → Distribution → Edit → **Sharing** (or Sharing within organization) → select Atlassian apps → Save → copy installation link. **UI only, no documented API** |
+| Multi-product constraint | same page | Installation is limited to sites running **every** selected product, and the user must install on each one. Our app needs Jira **and** Confluence selected, installed twice |
+| Installation link | developer console | Not generated here — requires the console action above. Deploy output names the page: `https://developer.atlassian.com/console/myapps/42074d3d-8872-4475-850b-8a75eb4d10b4/manage/distribution` |
+| Judge instructions | `docs/JUDGE_SETUP.md` | Written: install on both products, create the fenced block and two issues, then register/link/rescan/propose/approve and the stale refusal |
+| Production install on this site | not performed | The judges install on their own sites; the development installs are unchanged at v3.1.0 |
+
 ## Verification results, 2026-11-01 (local host, no site)
 
 | Item | Command or source | Result |
