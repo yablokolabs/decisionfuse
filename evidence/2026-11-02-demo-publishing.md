@@ -7,10 +7,11 @@ one; the Vimeo copy and the MP4 release asset stay as backups. Checked, not assu
 
 | Item | Value | How |
 | --- | --- | --- |
-| URL | `https://www.youtube.com/watch?v=EMhyd0Htq8o` | owner |
+| URL | `https://www.youtube.com/watch?v=nLg7tp5BkcY` | owner |
 | Page status | **200** | `curl -sIL` |
 | oEmbed status | **200** | `https://www.youtube.com/oembed?url=…&format=json` |
 | Title | `decisionfuse demo` | oEmbed |
+| Video id | `nLg7tp5BkcY` | oEmbed `thumbnail_url` |
 | Channel | `Santee` | oEmbed `author_name` |
 | oEmbed `width`/`height` | 200x113 | embed preset, not the upload resolution |
 
