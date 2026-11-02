@@ -22,6 +22,7 @@ The drift, the review loop, the architecture, then a recorded run on a developme
 Installed on the development site `yablo.atlassian.net`, verified 2026-11-01:
 
 - Forge app `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4`, deployed to `development` as v3.1.0, eligible for the Runs on Atlassian program.
+- Production deployed as **2.0.0** on 2026-11-02, also eligible for Runs on Atlassian. The judge installation link in [`docs/JUDGE_SETUP.md`](docs/JUDGE_SETUP.md) installs this build, for Jira and Confluence.
 - Installed separately for **Jira** (`e63b5663-a630-468b-883a-cfcaf946d437`) and **Confluence** (`ca73eaa3-ea71-4e76-a8e9-89cf74520fe2`). A Jira install does not grant Confluence access; both were required.
 - `forge lint` reports **No issues found** for the full manifest: Jira issue panel, Confluence byline module, resolver, queue consumer, three `action` modules, `rovo:agent` and `rovo:mcp`.
 - `npx tsc --noEmit` clean; `npx vitest run` **49 tests passing** across six suites, plus a gated live-site suite.
@@ -38,7 +39,8 @@ Not yet verified — do not assume it works:
 - The Rovo agent and MCP server have **never been invoked**. No admin has enabled external MCP exposure: the app endpoint returns 404 while the MCP server's own OAuth metadata returns 200. Bonus eligibility is not claimed.
 - A browser-free runtime hook was attempted and failed: a token-gated web trigger needed a major-version approval, dropped Runs on Atlassian eligibility, then returned `424` on every call without reaching the handler. It was reverted and eligibility restored. See [`evidence/2026-11-01-runtime-proof-attempt.md`](evidence/2026-11-01-runtime-proof-attempt.md).
 - No reviewer-without-write-permission or denied-source-access accounts exist on the site. Those paths are covered only by mocked tests. [`scripts/fixture-permissions.mjs`](scripts/fixture-permissions.mjs) records both once a second identity exists and exits 3 naming the requirement until then.
-- Teamwork Graph is not used. No Marketplace listing exists.
+- The production build has never been installed anywhere, so a judge following the install link would be the first to exercise it.
+- Teamwork Graph is not used. No Marketplace listing exists; the Marketplace bonus is not claimed.
 
 ## Architecture
 
