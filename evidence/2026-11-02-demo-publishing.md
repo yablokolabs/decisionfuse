@@ -1,6 +1,26 @@
-# Demo published on Vimeo — 2026-11-02
+# Demo published — 2026-11-02
 
-The 2:23 demo is now publicly watchable on Vimeo. Checked, not assumed.
+The 2:23 demo is public. YouTube is the primary link because the competition asks for
+one; the Vimeo copy and the MP4 release asset stay as backups. Checked, not assumed.
+
+## Primary — YouTube
+
+| Item | Value | How |
+| --- | --- | --- |
+| URL | `https://www.youtube.com/watch?v=EMhyd0Htq8o` | owner |
+| Page status | **200** | `curl -sIL` |
+| oEmbed status | **200** | `https://www.youtube.com/oembed?url=…&format=json` |
+| Title | `decisionfuse demo` | oEmbed |
+| Channel | `Santee` | oEmbed `author_name` |
+| oEmbed `width`/`height` | 200x113 | embed preset, not the upload resolution |
+
+YouTube's oEmbed does not report duration, so the five-minute cap is not provable from
+YouTube alone. The file that was uploaded measured **143.3 s (2:23)** by `ffprobe`
+(`evidence/2026-11-01-owner-recut.md`), and the identical cut on Vimeo reports
+`duration: 143` through its oEmbed. Cap met on that evidence; if a stricter check is
+needed, read the duration off the watch page itself.
+
+## Backup — Vimeo
 
 | Item | Value | How |
 | --- | --- | --- |
@@ -9,20 +29,20 @@ The 2:23 demo is now publicly watchable on Vimeo. Checked, not assumed.
 | oEmbed status | **200** | `https://vimeo.com/api/oembed.json?url=…` |
 | Title | `decisionfuse-demo-2m23` | oEmbed |
 | Duration | **143 s = 2:23** | oEmbed `duration` |
-| Cap check | **under five minutes** | 143 < 300 |
 | Uploaded | 2026-11-02 05:23:03 | oEmbed `upload_date` |
-| `width`/`height` in oEmbed | 426x240 | oEmbed |
 
-The 426x240 figures are what Vimeo's oEmbed reports for the embed preset, not the
-uploaded resolution: the pre-upload file measured 1920x1080 in
-`evidence/2026-11-01-owner-recut.md`. Playback resolution was not verified here.
+The 426x240 in Vimeo's oEmbed is its embed preset, not the uploaded resolution; the
+pre-upload file measured 1920x1080.
 
-README's `## Demo` now links the Vimeo page, with the 35 MB MP4 release asset kept
-as a download fallback.
+## Backup — repository release asset
 
-Still true and not fixed by publishing: the re-cut's source is not in this
-repository, so `videos/decisionfuse-demo` renders a different 3:23 cut. The music
-licence is recorded in `THIRD_PARTY_NOTICES.md` from the owner's statement.
+`demo-2026-11-01` → `decisionfuse-demo-2m23.mp4`, 35,187,873 bytes, `curl -IL` **200**.
+Not committed: `out/` is git-ignored and a 35 MB binary is awkward to remove from history.
 
-The competition entry itself is submitted manually by the owner. Nothing in this
-repository submits it, and no Marketplace listing exists.
+## Still true, not fixed by publishing
+
+- The re-cut's source is not in this repository, so `videos/decisionfuse-demo` renders a
+  different 3:23 cut (`evidence/2026-11-01-owner-recut.md`).
+- The music licence is recorded in `THIRD_PARTY_NOTICES.md` from the owner's statement,
+  not from a licence document.
+- The competition entry is submitted manually by the owner. No Marketplace listing exists.

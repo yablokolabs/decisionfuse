@@ -4,7 +4,7 @@ Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketp
 
 ## Checkpoint — 2026-11-02 / working tree after `aa47881` / milestone M12 (demo on Vimeo, runbook for the two unproven paths)
 Changed:
-- README `## Demo` links `https://vimeo.com/1242318404`; the MP4 release asset stays as a download fallback. `evidence/2026-11-02-demo-publishing.md` records the check.
+- README `## Demo` links **YouTube** `https://www.youtube.com/watch?v=EMhyd0Htq8o`, the platform the competition asks for; the Vimeo copy (`vimeo.com/1242318404`, 143 s) and the MP4 release asset stay as backups. `evidence/2026-11-02-demo-publishing.md` records each check and states that YouTube's oEmbed reports no duration, so the cap rests on `ffprobe` 143.3 s plus Vimeo's `duration: 143`.
 - `docs/PANEL_AND_MCP_RUNBOOK.md` (new): exact owner sequence for the signed-in panel run and the MCP enablement, with the strings the product actually produces, the gate's rejection codes in order (`permission-denied`, `expired-proposal`, `stale-source`, `stale-issue`), the 24 h proposal TTL, and the note that an `obsolete-scope` approval correctly returns `suggested`, not `applied`.
 - `docs/DEMO_AND_PILOT.md` points at the runbook instead of duplicating a shorter version.
 Checks actually run: `curl -sIL https://vimeo.com/1242318404` → **200**; oEmbed → **200**, title `decisionfuse-demo-2m23`, `duration: 143`, so the five-minute cap is met; both files re-read after writing.
