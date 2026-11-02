@@ -19,6 +19,7 @@ Read AGENTS.md, PROJECT_BUILD.md, docs/PROGRESS.md and the latest evidence befor
 - The competition entry is submitted **manually by the owner**. No automated submission exists here.
 - Production environment deployed 2026-11-02: `forge deploy -e production` → **2.0.0**, lint clean, Runs on Atlassian eligible. An installation link installs production, so this was the prerequisite for the Devpost field.
 - Judge link needs a console action: distribution is **Not sharing**, and CLI 15.0.0 has no sharing flag. Developer console → Distribution → Edit → **Sharing** → select **Jira + Confluence** → Save → copy link. Page: `https://developer.atlassian.com/console/myapps/42074d3d-8872-4475-850b-8a75eb4d10b4/manage/distribution`. Judge steps live in `docs/JUDGE_SETUP.md`.
+- Installation link for judges **exists** (owner-generated 2026-11-02, recorded in `docs/JUDGE_SETUP.md`, 1,487 chars, `product=jira` + `product=confluence`, installs production 2.0.0). `curl` without a session → **200**. That is not proof a non-contributor can install: the page is client-rendered and the real attempt happens after sign-in. Distribution status is unreadable from the CLI.
 - `forge deploy` fails if `tsconfig.json` sets `noEmit: true` — Forge's ts-loader then emits nothing. Keep `noEmit` false and pass `--noEmit` in the npm scripts.
 
 ## What is proven, and what is not

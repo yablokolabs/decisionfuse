@@ -9,8 +9,9 @@ Changed:
 - `docs/PLATFORM_VERIFICATION.md`: new distribution section. `forge install --help` on 15.0.0 has **no** sharing flag; the Oct 30 2026 reference makes sharing a developer-console action with **no documented API**; distribution is currently **Not sharing**, so judges cannot install until a human flips it to **Sharing** and selects both products.
 - `evidence/2026-11-02-production-deploy.md` records the deploy, the console URL the CLI printed, and the multi-product constraint.
 Checks actually run: `forge whoami` with token env auth → logged in; `forge deploy -e production` → Deployed 2.0.0, RoA eligible; `forge install --help` → no sharing option; distribution docs re-read on 2026-11-02.
-Open: the installation link cannot be generated from this host. A console admin must set Distribution → **Sharing**, select **Jira + Confluence**, save, and copy the link.
-Next executable action: generate the installation link in the console, then paste it into the Devpost field and attach the `docs/JUDGE_SETUP.md` steps.
+Update: the owner generated the installation link on 2026-11-02. It carries `product=confluence` and `product=jira`, installs production 2.0.0, and is recorded in `docs/JUDGE_SETUP.md`.
+Checks actually run on the link: `curl` without a session → **200**, no redirect; both product parameters present. That confirms the URL is served and well formed. It does **not** confirm a non-contributor can complete an install — that needs a signed-in site admin, and nobody outside the owner's accounts has tried.
+Next executable action: paste the link into Devpost and attach `docs/JUDGE_SETUP.md`; then, if a conclusive check is wanted, install from the link on a site where the owner is not a contributor.
 
 ## Checkpoint — 2026-11-02 / working tree after `aa47881` / milestone M12 (demo on Vimeo, runbook for the two unproven paths)
 Changed:
