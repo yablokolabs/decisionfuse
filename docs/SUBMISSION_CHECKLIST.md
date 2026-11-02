@@ -12,3 +12,25 @@ Grounding: user's attached brief, archived in COMPETITION_BRIEF.txt. Check live 
 - Remove secrets, private records and unsupported claims. Keep licenses/disclosures.
 - Deadline listing checked Nov 1: Dec 22 2026 12:00 PST / 20:00 UTC / Dec 23 01:30 IST. Reconfirm rules and eligibility.
 - Publishing, messaging, Marketplace or competition submission only with user authorization.
+
+## Submission facts
+
+Copy-paste values for the Devpost form. Nothing here is a secret.
+
+| Field | Value |
+| --- | --- |
+| App ID (Developer Console) | `42074d3d-8872-4475-850b-8a75eb4d10b4` |
+| App ID (full ARI) | `ari:cloud:ecosystem::app/42074d3d-8872-4475-850b-8a75eb4d10b4` |
+| Developer console page | https://developer.atlassian.com/console/myapps/42074d3d-8872-4475-850b-8a75eb4d10b4 |
+| Distribution page | https://developer.atlassian.com/console/myapps/42074d3d-8872-4475-850b-8a75eb4d10b4/manage/distribution |
+| Installation link for judges | `docs/JUDGE_SETUP.md` (top of file) |
+| Production version | 2.0.0, Runs on Atlassian eligible |
+| Demo video | https://www.youtube.com/watch?v=nLg7tp5BkcY (2:23) |
+| Judge testing instructions | `docs/JUDGE_SETUP.md`, linked in the submission |
+| Marketplace | none; leave the bonus field empty |
+| Main repo | https://github.com/yablokolabs/decisionfuse |
+
+The UUID is the app id with the `ari:cloud:ecosystem::app/` prefix removed. If a form
+rejects the bare id, paste the full ARI; if it rejects the ARI, paste the UUID. Both
+identify the same app.
+
