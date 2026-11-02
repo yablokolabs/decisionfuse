@@ -2,6 +2,15 @@
 Status: DEPLOYED AND INSTALLED ON `yablo.atlassian.net` (Jira + Confluence, development v3.1.0, eligible for Runs on Atlassian). Engine, proposal and approval gate have run against live site content, including the unaffected-control rule; the Forge-runtime invocation, Rovo agent call and MCP call are still unproven — they need a signed-in browser session or an admin.
 Category: Software Teams. Bonus targets: Rovo first, MCP second; TWG and Marketplace conditional.
 
+## Checkpoint — 2026-11-02 / working tree after `00d5bea` / milestone M15 (submitted; only the Access risk left)
+Changed:
+- `docs/SUBMISSION_CHECKLIST.md` gains a **Submission status** section: owner reports Devpost submitted 2026-11-02 with the installation link, the public 2:23 YouTube demo and the technology explanation; bonus boxes left unticked; edits remain possible until Dec 22.
+- `docs/PANEL_AND_MCP_RUNBOOK.md` reordered: **Part 0 — outsider install test** now comes first, because it is the only remaining item that maps to a stated submission requirement. Parts 1-3 stay documented for optional use.
+Owner decision: the panel run and the Rovo/MCP invocations are **skipped** after submission. Recorded, not argued.
+Checks actually run: `grep '^## '` on the runbook → Parts 0-3 plus the outcome table; `git log origin/main..HEAD` → 0 unpushed.
+Open risk: whether the link installs for a non-contributor. Two checks, cheapest first — read the Distribution status in the console (expect **Sharing**), then install from the link in a private window as a second account.
+Next executable action: those two checks; nothing else on this build is gated on code.
+
 ## Checkpoint — 2026-11-02 / working tree after `204b374` / milestone M14 (judge instructions audited, Marketplace deliberately not claimed)
 Changed:
 - `docs/JUDGE_SETUP.md`: states **credentials = none** (no keys, tokens, env vars, webhooks or external services; installing for Jira and Confluence is the whole configuration), fixes `DFS-2` to `ac-1`, states that `extractCriteria` treats every non-empty description line as a criterion, requires the three fence lines in separate paragraphs, and adds a troubleshooting table.

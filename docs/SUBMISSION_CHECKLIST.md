@@ -1,4 +1,17 @@
 # Submission readiness
+
+## Submission status
+
+The owner reports the Devpost form as **submitted on 2026-11-02**, with the installation
+link, the public YouTube demo and the technology explanation. Bonus boxes were left
+unticked (Rovo, MCP, Teamwork Graph, Marketplace) because none of those capabilities has a
+recorded invocation or listing.
+
+What remains is not a submission task, it is a risk check: **confirm the installation link
+works for someone outside the owner's organization**, because that is the Access
+requirement and it is the only thing judges will hit first. See
+`docs/PANEL_AND_MCP_RUNBOOK.md` Part 0. Devpost normally allows edits until the deadline
+(Dec 22, 2026), so bonuses remain addable later if an invocation is ever recorded.
 Grounding: user's attached brief, archived in COMPETITION_BRIEF.txt. Check live rules again before submission.
 - Main requirement: real Forge app integrating at least one eligible Atlassian product. Selected category Software Teams.
 - All five judging criteria carry 20%: implementation, design, impact, innovation, presentation. Show proof for each, not speculative scores.
