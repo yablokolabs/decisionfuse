@@ -21,6 +21,56 @@ Page: `426003` in space `SD`. Issues: `DFS-1` (affected), `DFS-2` (unaffected co
 
 3. If the block text is already edited from that wording, set it back and publish before registering. Registering a changed block baselines the change, and there is then no drift to find.
 
+## Order of operations
+
+| Step | Time | Why it matters |
+| --- | --- | --- |
+| **Part 0** — outsider install test | 10 min | The only one that satisfies a stated submission requirement (Access) |
+| **Part 1** — panel run | 20 min | Protects Implementation and Design, 40% of the judging weight |
+| **Part 3** — Rovo agent | 10 min | $1,500 bonus, six winners |
+| **Part 2** — MCP tools | 10 min | $1,500 bonus, six winners |
+
+Do Part 0 first. If the link does not work for an outsider, everything else is decoration.
+
+## Part 0 — prove the installation link works for an outsider
+
+This is the Access requirement: "Provide access ... to an installation link for the judges
+and review team to test your application." A link that only the app's contributors can use
+does not meet it, and nothing on this host can test it.
+
+**You need:** an Atlassian account that is *not* a contributor of the app, that is an
+admin of a site running **both Jira and Confluence**. Cheapest route is a free Atlassian
+Cloud site created with a second email address; a colleague's site works too.
+
+1. Open a **private/incognito** window so no existing session is reused.
+2. Sign in as the second account.
+3. Open the installation link from `docs/JUDGE_SETUP.md`.
+4. Expected: an installation screen naming **DecisionFuse**, showing the permissions it
+   requests — `read:jira-work`, `write:jira-work`, `read:confluence-content.all`,
+   `storage:app`. If you see "app not available" or a 404 page, stop here: the
+   distribution status is still `Not sharing` or still restricted to your organization.
+5. Choose the site, select **Jira**, install.
+6. Reopen the same link, select **Confluence**, install.
+7. Confirm both under **Apps → Manage apps** (Jira admin and Confluence admin are separate
+   pages; both should list DecisionFuse).
+8. Open any Confluence page — the **DecisionFuse** byline item must appear. Open any Jira
+   issue — the **DecisionFuse** panel must appear.
+
+**Failure triage**
+
+| What you see | Meaning | Fix |
+| --- | --- | --- |
+| "App not available" / 404 | Distribution is `Not sharing`, or `Sharing within organization` while the tester is outside your org | Developer console → Distribution → set **Sharing** → Save. Then retest with the same link |
+| No site offered | The account is not an admin of any site | Use an account that is a site admin |
+| Jira installed, no Confluence panel | Only one product installed, or only one product selected in the console | Reopen the link and install for Confluence; confirm both products are ticked in Distribution |
+| Installed, panel blank | This is the expected pre-seed state — the store is empty until a decision is registered | Continue with Part 1 on this site if you want; it is the honest judge experience |
+
+**Record:** the two installation timestamps, the screenshots of the permission screen and
+of the byline item, and the site URL (redact the account email). Save as
+`evidence/<date>-outsider-install.md`.
+
+If Part 0 passes, the Access requirement is satisfied and judges can reach the app.
+
 ## Part 1 — the panel run (needs a signed-in browser)
 
 Order matters: register, link, then edit the page, then rescan. An edit before
